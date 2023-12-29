@@ -3,9 +3,9 @@
  * City table creation
  * Copyright (C) 2019
  *
- * This file is part of Dyson/SinglePageCheckout.
+ * This file is part of Dyson/AmastyCheckoutExtension.
  *
- * Dyson/SinglePageCheckout is free software: you can redistribute it and/or modify
+ * Dyson/AmastyCheckoutExtension is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -19,7 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Dyson\SinglePageCheckout\Api;
+namespace Dyson\AmastyCheckoutExtension\Api;
 
 use Magento\Framework\Api\SearchCriteriaInterface;
 
@@ -28,18 +28,18 @@ interface DysonCityRepositoryInterface
 
     /**
      * Save dyson_city
-     * @param \Dyson\SinglePageCheckout\Api\Data\DysonCityInterface $dysonCity
-     * @return \Dyson\SinglePageCheckout\Api\Data\DysonCityInterface
+     * @param \Dyson\AmastyCheckoutExtension\Api\Data\DysonCityInterface $dysonCity
+     * @return \Dyson\AmastyCheckoutExtension\Api\Data\DysonCityInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function save(
-        \Dyson\SinglePageCheckout\Api\Data\DysonCityInterface $dysonCity
+        \Dyson\AmastyCheckoutExtension\Api\Data\DysonCityInterface $dysonCity
     );
 
     /**
      * Retrieve dyson_city
      * @param string $dysonCityId
-     * @return \Dyson\SinglePageCheckout\Api\Data\DysonCityInterface
+     * @return \Dyson\AmastyCheckoutExtension\Api\Data\DysonCityInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getById($dysonCityId);
@@ -47,7 +47,7 @@ interface DysonCityRepositoryInterface
     /**
      * Retrieve dyson_city matching the specified criteria.
      * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
-     * @return \Dyson\SinglePageCheckout\Api\Data\DysonCitySearchResultsInterface
+     * @return \Dyson\AmastyCheckoutExtension\Api\Data\DysonCitySearchResultsInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getList(
@@ -56,12 +56,12 @@ interface DysonCityRepositoryInterface
 
     /**
      * Delete dyson_city
-     * @param \Dyson\SinglePageCheckout\Api\Data\DysonCityInterface $dysonCity
+     * @param \Dyson\AmastyCheckoutExtension\Api\Data\DysonCityInterface $dysonCity
      * @return bool true on success
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function delete(
-        \Dyson\SinglePageCheckout\Api\Data\DysonCityInterface $dysonCity
+        \Dyson\AmastyCheckoutExtension\Api\Data\DysonCityInterface $dysonCity
     );
 
     /**

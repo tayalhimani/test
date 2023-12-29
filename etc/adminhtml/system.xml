@@ -7,41 +7,11 @@
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
-        <!-- Amends to Amasty_Checkout config display. -->
-        <section id="amasty_checkout">
-            <!-- Change the group label to SPC -->
-            <label>Single Page Checkout</label>
-            <group id="general">
-                <field id="enabled">
-                    <!-- Change the field label to SPC -->
-                    <label>Enable Single Page Checkout</label>
-                </field>
-            </group>
-        </section>
-
         <!-- New config section for Dyson_SinglePageCheckout. -->
         <section id="dyson_singlepagecheckout" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
             <label>Single Page Checkout</label>
             <tab>dyson</tab>
-            <resource>Dyson_SinglePageCheckout::config</resource>
-
-            <!-- GENERAL CONFIG -->
-            <group id="general" translate="label" type="text" sortOrder="000" showInDefault="1" showInWebsite="1" showInStore="1">
-
-                <label>General</label>
-
-                <field id="contact_number_display" translate="label comment" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="0">
-                    <label>Contact phone number (display)</label>
-                    <comment>Changes the phone number displayed in the header of checkout.</comment>
-                </field>
-
-                <field id="contact_number_dialed" translate="label comment" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="0">
-                    <label>Contact phone number (dialed)</label>
-                    <comment>Changes the phone number that is actually dialed when the phone number in the checkout header is clicked on mobile. Internationalization is supported, e.g. +441234567890.</comment>
-                </field>
-
-            </group>
-
+            <resource>Dyson_AmastyCheckoutExtension::config</resource>
             <!-- Billing Address Title Config -->
             <group id="checkout" translate="label" type="text" sortOrder="01" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Billing Address Title Config</label>
@@ -56,12 +26,7 @@
                         <field id="dyson_singlepagecheckout/checkout/billing_title_enabled">1</field>
                     </depends>
                 </field>
-                <field id="payment_types_available_push_datalayer" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
-                    <label>Enabled Payment Types for Data Layer Push?</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
             </group>
-
             <!-- Shipping Address Title Config -->
             <group id="shipping_checkout" translate="label" type="text" sortOrder="01" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Shipping Address Title Config</label>
@@ -86,83 +51,22 @@
                     </depends>
                 </field>
             </group>
-
-            <!-- City Dropdown Config -->
-            <group id="enable_city_dropdown" translate="label" type="text" sortOrder="01" showInDefault="1" showInWebsite="1" showInStore="1">
+             <group id="enable_city_dropdown" translate="label" type="text" sortOrder="01" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Enable City as Dropdown</label>
                 <field id="enable_city_dropdown_enable" translate="Enable City as Dropdown" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Enabled</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="city_dropdown_caption" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
-                    <label>City Dropdown Caption</label>
-                </field>
             </group>
-
-            <!-- Street 0 required validation for only street 0 field -->
-            <group id="street0_required" translate="label" type="text" sortOrder="01" showInDefault="1" showInWebsite="1" showInStore="0">
-                <label>Enable Street 0 field validation only</label>
-                <field id="enable_street0_required" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
-                    <label>Validate only Street 0 field is required in checkout shipping form</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
-            </group>
-
             <!-- Prefix value configuration -->
             <group id="prefix_dialcode" translate="label" type="text" sortOrder="01" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Prefix telephone configuration</label>
                 <field id="prefix_dialcode_enabled" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Enabled</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <tooltip>Enable/Disable Dial Code on Product Registration, Checkout Page</tooltip>
-                    <comment>Enable/Disable Dial Code on Product Registration, Checkout Page</comment>
-                </field>
-                <field id="prefix_dialcode_validate_length" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
-                    <label>Telephone validation length</label>
                 </field>
             </group>
-
-            <group id="country_label" translate="label" type="text" sortOrder="01" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Display Country</label>
-                <field id="country_label_enabled" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
-                    <label>Enabled</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <tooltip>Enable/Disable Dial Code on Product Registration</tooltip>
-                    <comment>Enable/Disable Dial Code on Product Registration</comment>
-                </field>
-            </group>
-
-            <!-- Reload totals in checkout config -->
-            <group id="reload_totals_at_checkout" translate="label" type="text" sortOrder="01" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Reload totals in checkout</label>
-                <field id="reload_totals_enabled" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
-                    <label>Enabled</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
-            </group>
-
-            <!-- Country Label SortOrder -->
-            <group id="country_label_sort_order" translate="label" type="text" sortOrder="01" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Country Label SortOrder</label>
-                <field id="sortorder" translate="label comment" type="text" sortOrder="4"
-                       showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
-                    <label>Country Label SortOrder</label>
-                </field>
-            </group>
-
-            <!-- Postal Code Prefix value configuration -->
-            <group id="prefix_postalcode" translate="label" type="text" sortOrder="01" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Enable Postal Code Prefix</label>
-                <field id="enable_postal_prefix" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
-                    <label>Enabled Postal Code Prefix</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <tooltip>ISO-2 Code will be used as the perfix for postal code</tooltip>
-                    <comment>Enable/Disable Postal Code Prefix on Checkout Page Postal Code field</comment>
-                </field>
-            </group>
-
         </section>
-
         <!-- Coupon Summary Message  configuration -->
         <section id="cart">
             <label>Cart</label>
@@ -206,13 +110,6 @@
                     <depends>
                         <field id="cart/coupon_carts_summary_message/enable">1</field>
                     </depends>
-                </field>
-            </group>
-        </section>
-        <section id="sales">
-            <group id="totals_sort">
-                <field id="discount_message" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Discount Message</label>
                 </field>
             </group>
         </section>

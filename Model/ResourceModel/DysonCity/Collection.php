@@ -3,9 +3,9 @@
  * City table creation
  * Copyright (C) 2019
  *
- * This file is part of Dyson/SinglePageCheckout.
+ * This file is part of Dyson/AmastyCheckoutExtension.
  *
- * Dyson/SinglePageCheckout is free software: you can redistribute it and/or modify
+ * Dyson/AmastyCheckoutExtension is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -19,7 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Dyson\SinglePageCheckout\Model\ResourceModel\DysonCity;
+namespace Dyson\AmastyCheckoutExtension\Model\ResourceModel\DysonCity;
 
 class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
 {
@@ -32,8 +32,8 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
     protected function _construct()
     {
         $this->_init(
-            \Dyson\SinglePageCheckout\Model\DysonCity::class,
-            \Dyson\SinglePageCheckout\Model\ResourceModel\DysonCity::class
+            \Dyson\AmastyCheckoutExtension\Model\DysonCity::class,
+            \Dyson\AmastyCheckoutExtension\Model\ResourceModel\DysonCity::class
         );
     }
 }

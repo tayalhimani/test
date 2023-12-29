@@ -6,11 +6,11 @@ define(
         'Magento_Checkout/js/view/summary/item/details',
         'Magento_Checkout/js/model/quote',
         'Magento_Ui/js/modal/confirm',
-        'Amasty_CheckoutCore/js/action/remove-item',
-        'Amasty_CheckoutCore/js/action/update-item',
+        'Amasty_Checkout/js/action/remove-item',
+        'Amasty_Checkout/js/action/update-item',
         'mage/translate',
         'ko',
-        'Amasty_CheckoutCore/js/options/configurable',
+        'Amasty_Checkout/js/options/configurable',
         'priceOptions',
         'Magento_Catalog/js/price-utils',
         'mage/validation',
@@ -19,7 +19,7 @@ define(
         "use strict";
         return Component.extend({
             defaults: {
-                template: 'Dyson_SinglePageCheckout/gv/checkout-summary-item-details'
+                template: 'Dyson_AmastyCheckoutExtension/gv/checkout-summary-item-details'
             },
 
             /**

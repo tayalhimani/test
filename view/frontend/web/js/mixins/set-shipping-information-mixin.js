@@ -17,27 +17,23 @@ define([
 
             // you can extract value of extension attribute from any place (in this example using customAttributes approach)
             _.each(shippingAddress.customAttributes, function (value, key) {
-
                 if (key === 'dialcode') { // Condition applicable for Magento 2.2.7 and lower version. Need to remove code after all market upgraded to Magento 2.3.6 and higher version.
                     if (window.checkoutConfig.dialcode) {
-                        shippingAddress['extensionAttributes'][key] = value.value;
+                        shippingAddress['extensionAttributes'][key] = window.checkoutConfig.dialcode['dialcode'];
                     } else {
-                        shippingAddress['extensionAttributes'][key] = '';
+                        shippingAddress['extensionAttributes'][key] = value;
                     }
                 }
                 else if (value.attribute_code === 'dialcode') { // Condition applicable for Magento 2.3.6 and higher version
                     if (window.checkoutConfig.dialcode) {
-                        shippingAddress['extensionAttributes']['dialcode'] = value.value;
+                        shippingAddress['extensionAttributes'][value.attribute_code] = window.checkoutConfig.dialcode['dialcode'];
                     } else {
-                        shippingAddress['extensionAttributes']['dialcode'] = '';
+                        shippingAddress['extensionAttributes'][value.attribute_code] = value.value;
                     }
+                    
                 }
             });
-
-            if (window.checkoutConfig.prefix_postal_code) {
-                shippingAddress.postcode = window.checkoutConfig.prefix_postal_code + '-' + shippingAddress.postcode;
-            }
-
+            
             // pass execution to original action ('Magento_Checkout/js/action/set-shipping-information')
             return originalAction();
         });

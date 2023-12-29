@@ -17,100 +17,13 @@ define([
     'Magento_Checkout/js/model/totals',
     'mage/translate',
     'Magento_Checkout/js/model/full-screen-loader',
-    'Adyen_Payment/js/model/adyen-payment-service',
-    'Magento_Checkout/js/model/payment-service',
-    'accordion'
-], function ($, quote, urlManager, errorProcessor, messageContainer, storage, getPaymentInformationAction, totals, $t, fullScreenLoader,adyenPaymentService, paymentService
+    'Magento_Checkout/js/model/payment-service'
+], function ($, quote, urlManager, errorProcessor, messageContainer, storage, getPaymentInformationAction, totals, $t,
+             fullScreenLoader , paymentService
 ) {
     'use strict';
 
     return function (isApplied) {
-
-        var retrievePaymentMethods = function (){
-            fullScreenLoader.startLoader();
-            adyenPaymentService.retrievePaymentMethods().done(function(paymentMethods) {
-                try {
-                    paymentMethods = JSON.parse(paymentMethods);
-                } catch(error) {
-                    console.log(error);
-                    paymentMethods = null;
-                }
-                adyenPaymentService.setPaymentMethods(paymentMethods);
-                fullScreenLoader.stopLoader();
-
-                const clickOnContinueButton = () => {
-                  setTimeout(() => {
-                    $("#discount-form #discount-code").focus();
-                    let adyen_error_message = window.localStorage.getItem('adyen_error_message');
-                    if (adyen_error_message) {
-                      $("#adyen-cc-form .messages").html(adyen_error_message);
-                        window.localStorage.removeItem('adyen_error_message');
-                    } else {
-                      $("#adyen-cc-form .messages").html('');
-                      window.localStorage.removeItem('adyen_error_message');
-                    }
-
-                    let adyen_error_message_selectpayment = window.localStorage.getItem('adyen_error_message_selectpayment');
-                    if (adyen_error_message_selectpayment) {
-                      $(".tabs__tab--adyen_hpp ._active .messages").html(adyen_error_message_selectpayment);
-                      window.localStorage.removeItem('adyen_error_message_selectpayment');
-                    } else {
-                      $(".tabs__tab--adyen_hpp ._active .messages").html('');
-                      window.localStorage.removeItem('adyen_error_message_selectpayment');
-                    }
-
-                  }, 1300);
-                };
-
-                const checkoutBlockTabs = $(".checkout-block__tabs").length;
-                const isAccordionEnabled = window.checkoutConfig.accordion_payment_enabled;
-
-                if ((!isAccordionEnabled && checkoutBlockTabs < 1) || !isAccordionEnabled) {
-                    clickOnContinueButton();
-                } else {
-                    setTimeout(() => {
-                        const paymethodNumber = $("#payment-element .accordion-heading").length;
-                        $("#payment-element").hide();
-
-                        if (paymethodNumber > 1) {
-                            setTimeout(() => {
-                                $("#payment-element").accordion({
-                                    'openedState': 'active',
-                                    'collapsible': true,
-                                    'active': false
-                                });
-                            }, 1000);
-                        } else {
-                            $(".payment-tabs__header").addClass('no-accordion');
-                            $(".no-accordion .accordion-content ").show();
-                            $(".no-accordion .accordion-heading").addClass('active cursor-effect');
-                        }
-
-                        let adyen_error_message = window.localStorage.getItem('adyen_error_message');
-                        if (adyen_error_message) {
-                          $("#adyen-cc-form .messages").html(adyen_error_message);
-                          window.localStorage.removeItem('adyen_error_message');
-                        } else {
-                          $("#adyen-cc-form .messages").html('');
-                          window.localStorage.removeItem('adyen_error_message');
-                        }
-
-                        let adyen_error_message_selectpayment = window.localStorage.getItem('adyen_error_message_selectpayment');
-                        if (adyen_error_message_selectpayment) {
-                          $(".tabs__tab--adyen_hpp ._active .messages").html(adyen_error_message_selectpayment);
-                          window.localStorage.removeItem('adyen_error_message_selectpayment');
-                        }
-
-                        $("#payment-element").show();
-                        $("#discount-form #discount-code").focus();
-                    }, 1000);
-                }
-
-            }).fail (function() {
-                console.log('Fetching the payment methods failed!');
-            });
-        };
-
         var quoteId = quote.getQuoteId(),
             url = urlManager.getCancelCouponUrl(quoteId),
             message = $t('Your coupon was successfully removed.');
@@ -126,6 +39,7 @@ define([
 
             //remove payment method
             quote.paymentMethod(null);
+            paymentService.setPaymentMethods([]);
 
             var $collapsible = $('[data-collapsible="true"]');
             // Check if the collapsible widget is already initialized
@@ -133,10 +47,8 @@ define([
                 // If it is initialized, destroy the widget
                 $("#payment-element").accordion('destroy');
             }
-            // Interchanged the lines to fix the issue with the destroying of collapsible widget via paymentService
-            paymentService.setPaymentMethods([]);
-            totals.isLoading(true);
 
+            totals.isLoading(true);
             getPaymentInformationAction(deferred);
             $.when(deferred).done(function () {
                 isApplied(false);
@@ -167,9 +79,13 @@ define([
                             }
                         });
 
-                        $('.payment-method .payment-method-title').each((index, element) => {
-                            $(element).clone().appendTo('.checkout-block__tabs__header');
-                        });
+                        const isEnabled = window.checkoutConfig.accordion_payment_enabled;
+                        // Copy existing markup to our tabs structure
+                        if (!isEnabled) {
+                          $('.payment-method .payment-method-title').each((index, element) => {
+                              $(element).clone().appendTo('.checkout-block__tabs__header');
+                          });
+                        }
 
                         $('.checkout-block__tabs__header')
                             .find('.payment-method-title:first-of-type')
@@ -177,7 +93,7 @@ define([
                             .find('input')
                             .prop('checked', true);
 
-                    }, 1300);
+                    }, 1000);
                 };
 
                 const checkoutBlockTabs = $(".checkout-block__tabs").length;
@@ -205,23 +121,11 @@ define([
                         }
 
                         $("#payment-element").show();
-                    }, 1300);
-                }
+                        $("#discount-form #discount-code").focus();
 
-                const retrievePaymentMethods_ = () => {
-                    setTimeout(() => {
-                        retrievePaymentMethods();
-                    }, 300);
+                    }, 1000);
                 }
-                retrievePaymentMethods_();
-
             });
-            var enableFocus = () => {
-                setTimeout(() => {
-                    $("#discount-form #discount-code").focus();
-                }, 1300);
-            }
-            enableFocus();
             messageContainer.addSuccessMessage({
                 'message': message
             });

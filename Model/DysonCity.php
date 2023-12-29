@@ -3,9 +3,9 @@
  * City table creation
  * Copyright (C) 2019
  *
- * This file is part of Dyson/SinglePageCheckout.
+ * This file is part of Dyson/AmastyCheckoutExtension.
  *
- * Dyson/SinglePageCheckout is free software: you can redistribute it and/or modify
+ * Dyson/AmastyCheckoutExtension is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -19,11 +19,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Dyson\SinglePageCheckout\Model;
+namespace Dyson\AmastyCheckoutExtension\Model;
 
 use Magento\Framework\Api\DataObjectHelper;
-use Dyson\SinglePageCheckout\Api\Data\DysonCityInterfaceFactory;
-use Dyson\SinglePageCheckout\Api\Data\DysonCityInterface;
+use Dyson\AmastyCheckoutExtension\Api\Data\DysonCityInterfaceFactory;
+use Dyson\AmastyCheckoutExtension\Api\Data\DysonCityInterface;
 
 class DysonCity extends \Magento\Framework\Model\AbstractModel
 {
@@ -39,8 +39,8 @@ class DysonCity extends \Magento\Framework\Model\AbstractModel
      * @param \Magento\Framework\Registry $registry
      * @param DysonCityInterfaceFactory $dyson_cityDataFactory
      * @param DataObjectHelper $dataObjectHelper
-     * @param \Dyson\SinglePageCheckout\Model\ResourceModel\DysonCity $resource
-     * @param \Dyson\SinglePageCheckout\Model\ResourceModel\DysonCity\Collection $resourceCollection
+     * @param \Dyson\AmastyCheckoutExtension\Model\ResourceModel\DysonCity $resource
+     * @param \Dyson\AmastyCheckoutExtension\Model\ResourceModel\DysonCity\Collection $resourceCollection
      * @param array $data
      */
     public function __construct(
@@ -48,8 +48,8 @@ class DysonCity extends \Magento\Framework\Model\AbstractModel
         \Magento\Framework\Registry $registry,
         DysonCityInterfaceFactory $dyson_cityDataFactory,
         DataObjectHelper $dataObjectHelper,
-        \Dyson\SinglePageCheckout\Model\ResourceModel\DysonCity $resource,
-        \Dyson\SinglePageCheckout\Model\ResourceModel\DysonCity\Collection $resourceCollection,
+        \Dyson\AmastyCheckoutExtension\Model\ResourceModel\DysonCity $resource,
+        \Dyson\AmastyCheckoutExtension\Model\ResourceModel\DysonCity\Collection $resourceCollection,
         array $data = []
     ) {
         $this->dyson_cityDataFactory = $dyson_cityDataFactory;
@@ -64,14 +64,14 @@ class DysonCity extends \Magento\Framework\Model\AbstractModel
     public function getDataModel()
     {
         $dyson_cityData = $this->getData();
-
+        
         $dyson_cityDataObject = $this->dyson_cityDataFactory->create();
         $this->dataObjectHelper->populateWithArray(
             $dyson_cityDataObject,
             $dyson_cityData,
             DysonCityInterface::class
         );
-
+        
         return $dyson_cityDataObject;
     }
 }

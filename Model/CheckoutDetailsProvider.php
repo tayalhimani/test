@@ -1,6 +1,6 @@
 <?php
 
-namespace Dyson\SinglePageCheckout\Model;
+namespace Dyson\AmastyCheckoutExtension\Model;
 
 use Magento\Checkout\Model\ConfigProviderInterface;
 
@@ -11,7 +11,7 @@ class CheckoutDetailsProvider implements ConfigProviderInterface
 {
     protected $helper;
     public function __construct(
-        \Dyson\SinglePageCheckout\Helper\Data $helper
+        \Dyson\AmastyCheckoutExtension\Helper\Data $helper
     ) {
         $this->helper = $helper;
     }

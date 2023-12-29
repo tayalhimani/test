@@ -1,13 +1,6 @@
-<!-- ko if: window.checkoutConfig.defaultCountryId == "SG" -->
 <label class="input-label-overlay">
-    <span contenteditable="true" data-bind="text: window.checkoutConfig.dialcode.dialcode"></span>
+    <span data-bind="text: window.checkoutConfig.dialcode.dialcode"></span>
 </label>
-<!-- /ko -->
-<!-- ko ifnot: window.checkoutConfig.defaultCountryId == "SG" -->
-<label class="input-label-overlay">
-    <span contenteditable="false" data-bind="text: window.checkoutConfig.dialcode.dialcode"></span>
-</label>
-<!-- /ko -->
 
 <input class="input-text" type="tel" data-bind="
     value: value,

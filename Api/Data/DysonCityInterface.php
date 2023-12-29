@@ -3,9 +3,9 @@
  * City table creation
  * Copyright (C) 2019
  *
- * This file is part of Dyson/SinglePageCheckout.
+ * This file is part of Dyson/AmastyCheckoutExtension.
  *
- * Dyson/SinglePageCheckout is free software: you can redistribute it and/or modify
+ * Dyson/AmastyCheckoutExtension is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -19,7 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Dyson\SinglePageCheckout\Api\Data;
+namespace Dyson\AmastyCheckoutExtension\Api\Data;
 
 interface DysonCityInterface extends \Magento\Framework\Api\ExtensibleDataInterface
 {
@@ -38,7 +38,7 @@ interface DysonCityInterface extends \Magento\Framework\Api\ExtensibleDataInterf
     /**
      * Set dyson_city_id
      * @param string $dysonCityId
-     * @return \Dyson\SinglePageCheckout\Api\Data\DysonCityInterface
+     * @return \Dyson\AmastyCheckoutExtension\Api\Data\DysonCityInterface
      */
     public function setDysonCityId($dysonCityId);
 
@@ -51,23 +51,23 @@ interface DysonCityInterface extends \Magento\Framework\Api\ExtensibleDataInterf
     /**
      * Set region_id
      * @param string $regionId
-     * @return \Dyson\SinglePageCheckout\Api\Data\DysonCityInterface
+     * @return \Dyson\AmastyCheckoutExtension\Api\Data\DysonCityInterface
      */
     public function setRegionId($regionId);
 
     /**
      * Retrieve existing extension attributes object or create a new one.
-     * @return \Dyson\SinglePageCheckout\Api\Data\DysonCityExtensionInterface|null
+     * @return \Dyson\AmastyCheckoutExtension\Api\Data\DysonCityExtensionInterface|null
      */
     public function getExtensionAttributes();
 
     /**
      * Set an extension attributes object.
-     * @param \Dyson\SinglePageCheckout\Api\Data\DysonCityExtensionInterface $extensionAttributes
+     * @param \Dyson\AmastyCheckoutExtension\Api\Data\DysonCityExtensionInterface $extensionAttributes
      * @return $this
      */
     public function setExtensionAttributes(
-        \Dyson\SinglePageCheckout\Api\Data\DysonCityExtensionInterface $extensionAttributes
+        \Dyson\AmastyCheckoutExtension\Api\Data\DysonCityExtensionInterface $extensionAttributes
     );
 
     /**
@@ -79,7 +79,7 @@ interface DysonCityInterface extends \Magento\Framework\Api\ExtensibleDataInterf
     /**
      * Set store_id
      * @param string $storeId
-     * @return \Dyson\SinglePageCheckout\Api\Data\DysonCityInterface
+     * @return \Dyson\AmastyCheckoutExtension\Api\Data\DysonCityInterface
      */
     public function setStoreId($storeId);
 
@@ -92,7 +92,7 @@ interface DysonCityInterface extends \Magento\Framework\Api\ExtensibleDataInterf
     /**
      * Set city
      * @param string $city
-     * @return \Dyson\SinglePageCheckout\Api\Data\DysonCityInterface
+     * @return \Dyson\AmastyCheckoutExtension\Api\Data\DysonCityInterface
      */
     public function setCity($city);
 }

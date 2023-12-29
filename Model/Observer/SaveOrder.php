@@ -1,6 +1,6 @@
 <?php
 
-namespace Dyson\SinglePageCheckout\Model\Observer;
+namespace Dyson\AmastyCheckoutExtension\Model\Observer;
 
 use Magento\Framework\Event\Observer as EventObserver;
 use Magento\Framework\Event\ObserverInterface;
@@ -32,25 +32,34 @@ class SaveOrder implements ObserverInterface
     protected $quoteRepository;
 
     /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    private $logger;
+
+    /**
      * @param JsonHelper $jsonHelper
      * @param \Magento\Framework\App\ResourceConnection $resource
      * @param \Magento\Sales\Api\OrderRepositoryInterface $orderRepository
      * @param \Magento\Quote\Api\CartRepositoryInterface $quoteRepository
+     * @param \Psr\Log\LoggerInterface $logger
      */
     public function __construct(
         JsonHelper $jsonHelper,
         \Magento\Framework\App\ResourceConnection $resource,
         \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
-        \Magento\Quote\Api\CartRepositoryInterface $quoteRepository
+        \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
+        \Psr\Log\LoggerInterface $logger
     ) {
         $this->resource = $resource;
         $this->jsonHelper = $jsonHelper;
         $this->orderRepository = $orderRepository;
         $this->quoteRepository = $quoteRepository;
+        $this->logger = $logger;
     }
 
     public function execute(EventObserver $observer)
     {
+      try {
         $orderIds = $observer->getOrderIds();
         $connection = $this->resource->getConnection();
 
@@ -63,35 +72,23 @@ class SaveOrder implements ObserverInterface
             //get the quote id
             $sql = "Select entity_id from " . $this->resource->getTableName('quote') . " where reserved_order_id = ". $orderIncrementId;
             $result = $connection->fetchAll($sql);
-            $quoteId = ($result) ? $result[0]['entity_id'] : null;
+            $quoteId = $result[0]['entity_id'];
 
-            if(!empty($quoteId))
-            {
-                //get the quote address fields
-                $shippingsql = "Select * from " . $this->resource->getTableName('quote_address') . " where quote_id = ". $quoteId . " and address_type = 'shipping'";
-                $billingsql = "Select * from " . $this->resource->getTableName('quote_address') . " where quote_id = ". $quoteId . " and address_type = 'billing'";
+            //get the quote address fields
+            $sql = "Select * from " . $this->resource->getTableName('quote_address') . " where quote_id = ". $quoteId . " and address_type = 'shipping'";
+            $result = $connection->fetchAll($sql);
+            $dialcode = $result[0]['dialcode'];
 
-                $shippingresult = $connection->fetchAll($shippingsql);
-                $billingresult = $connection->fetchAll($billingsql);
-
-                $shippingdialcode = $shippingresult[0]['dialcode'];
-                $billingdialcode = $billingresult[0]['dialcode'];
-
-                //save the quote address fields in the sales_order_address table
-                $shippingsql = '';
-                $shippingsql .= "`" . 'dialcode' . "`='" . $shippingdialcode . "', ";
-                $shippingsql = trim($shippingsql, ", ");
-
-                $billingsql = '';
-                $billingsql .= "`" . 'dialcode' . "`='" . $billingdialcode . "', ";
-                $billingsql = trim($billingsql, ", ");
-
-                $shippingsql = "Update " . $this->resource->getTableName('sales_order_address') . " Set " . $shippingsql . " where parent_id = ". $orderId . " and address_type = 'shipping'";
-                $connection->query($shippingsql);
-
-                $billingsql = "Update " . $this->resource->getTableName('sales_order_address') . " Set " . $billingsql . " where parent_id = ". $orderId . " and address_type = 'billing'";
-                $connection->query($billingsql);
-            }
+            //save the quote address fields in the sales_order_address table
+            $sql = '';
+            $sql .= "`" . 'dialcode' . "`='" . $dialcode . "', ";
+            $sql = trim($sql, ", ");
+            $sql = "Update " . $this->resource->getTableName('sales_order_address') . " Set " . $sql . " where parent_id = ". $orderId;
+            $connection->query($sql);
         }
+      } catch (\Exception $exception) {
+          $this->logger->critical($exception->getMessage());
+        }
+
     }
 }

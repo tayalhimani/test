@@ -1,0 +1,104 @@
+<!-- ko foreach: getRegion('authentication') -->
+<!-- ko template: getTemplate() --><!-- /ko -->
+<!--/ko-->
+
+<!-- ko foreach: getRegion('estimation') -->
+<!-- ko template: getTemplate() --><!-- /ko -->
+<!--/ko-->
+
+<!-- ko foreach: getRegion('messages') -->
+<!-- ko template: getTemplate() --><!-- /ko -->
+<!--/ko-->
+<div class="opc-wrapper layout-2-columns am-opc-wrapper g-wrap" data-bind="css: $data.additionalClasses">
+    <div class="checkout-column opc g-col gtw-col-3-4 am-opc-main">
+
+        <!-- ko if: getSortedBlock(0) -->
+        <div class="checkout-block checkout-block--details" data-status="closed" data-order="1">
+            <div class="checkout-block__header">
+                <div class="checkout-block__header__indicator"><span>1</span></div>
+                <h2 class="checkout-block__header__title" data-bind="i18n: 'Your details'"></h2>
+            </div>
+
+            <div class="checkout-block__content">
+                <div class="checkout-block__content__inner">
+                    <h2 class="checkout-block__content__subheading" data-bind="i18n: 'Please enter your details.'"></h2>
+                    <div class="custom-required-field" data-bind="i18n: '* Required Fields.'"></div>
+                    <!-- ko with: getChild('steps').getChild('shipping-step').getChild('step-config') -->
+                    <!-- ko template: getTemplate() --><!-- /ko -->
+                    <!--/ko-->
+
+                    <!-- ko with: getSortedBlock(0) -->
+                    <!-- ko template: getTemplate() --><!-- /ko -->
+                    <!--/ko-->
+                </div>
+            </div>
+        </div>
+        <!--/ko-->
+        <!-- ko if: getSortedBlock(1) -->
+        <div class="checkout-block">
+            <div class="checkout-block__content">
+                <div class="checkout-block__content__inner">
+                    <!-- ko with: getSortedBlock(1) -->
+                    <!-- ko template: getTemplate() --><!-- /ko -->
+                    <!--/ko-->
+                </div>
+            </div>
+        </div>
+        <!--/ko-->
+        <!-- ko if: getSortedBlock(2) -->
+        <div class="checkout-block">
+            <div class="checkout-block__content">
+                <div class="checkout-block__content__inner">
+                    <!-- ko with: getSortedBlock(2) -->
+                    <!-- ko template: getTemplate() --><!-- /ko -->
+                    <!--/ko-->
+                </div>
+            </div>
+        </div>
+        <!--/ko-->
+        <!-- ko if: getSortedBlock(3) -->
+        <div class="checkout-block checkout-block--payment" data-status="closed" data-order="2">
+
+            <div class="checkout-block__header">
+                <div class="checkout-block__header__indicator"><span>2</span></div>
+                <h2 class="checkout-block__header__title" data-bind="i18n: 'Payment'"></h2>
+            </div>
+
+            <div class="checkout-block__content">
+                <div class="checkout-block__content__inner">
+                    <!-- ko with: getSortedBlock(3) -->
+                    <!-- ko template: getTemplate() --><!-- /ko -->
+                    <!--/ko-->
+                </div>
+            </div>
+        </div>
+        <!--/ko-->
+    </div>
+    <div class="checkout-column opc g-col gtw-col-1-4 am-opc-summary">
+        <!-- ko if: getSortedBlock(4) -->
+        <div class="checkout-block">
+            <div class="checkout-block__summary">
+                <!-- ko with: getSortedBlock(4) -->
+                <!-- ko template: getTemplate() --><!-- /ko -->
+                <!--/ko-->
+            </div>
+        </div>
+        <!--/ko-->
+    </div>
+</div>
+<!-- ko if: window.checkoutConfig.dynamicPaymentEnable == 1 -->
+<div class="checkout-payment g-wrap">
+    <div class="g-col">
+      <h2 class="payment-icons-title" data-bind="i18n: 'Accepted payment methods'"></h2>
+      <div class="checkout-payment__image">
+      <!-- ko if: window.checkoutConfig.dynamicPaymentIcons -->
+          <!-- ko foreach: window.checkoutConfig.dynamicPaymentIcons -->
+          <div class="payment-icon-item module">
+           <img data-bind="attr: {src: dam_url, alt: title }"/>
+          </div>
+          <!--/ko-->
+     <!--/ko-->
+     </div>
+    </div>
+</div>
+<!--/ko-->
