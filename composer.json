@@ -1,0 +1,24 @@
+{
+    "name": "dyson/module-singlepagecheckout",
+    "description": "...",
+    "type": "magento2-module",
+    "license": [
+        "proprietary"
+    ],
+    "authors":[
+        {
+            "name":"Goram &amp; Vincent",
+            "email":"technical@goramandvincent.com"
+        }
+    ],
+    "require": {
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Dyson\\SinglePageCheckout\\": ""
+        }
+    }
+}

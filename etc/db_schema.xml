@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="dyson_city" resource="default" engine="innodb" comment="Dyson City Table">
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true" comment="Entity ID" />
+        <column xsi:type="varchar" name="country_code" nullable="true" length="2" comment="Country Code" />
+        <column xsi:type="smallint" name="region_id" unsigned="true" nullable="true" identity="false" comment="Region ID" />
+        <column xsi:type="smallint" name="store_id" unsigned="true" nullable="false" identity="false" comment="Store ID" />
+        <column xsi:type="varchar" name="city" nullable="false" length="255" comment="City" />
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id" />
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="DYSON_CITY_COUNTRY_CODE_DIRECTORY_COUNTRY_COUNTRY_ID"
+                    table="dyson_city" column="country_code" referenceTable="directory_country"
+                    referenceColumn="country_id" onDelete="CASCADE"/>
+        <constraint xsi:type="foreign" referenceId="DYSON_CITY_STORE_ID_STORE_STORE_ID"
+                    table="dyson_city" column="store_id" referenceTable="store"
+                    referenceColumn="store_id" onDelete="CASCADE"/>
+    </table>
+</schema>

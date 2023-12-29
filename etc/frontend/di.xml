@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Goram & Vincent
+ * @package Dyson_SinglePageCheckout
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <!-- Added for Merging AmastyCheckoutExtension -->
+    <type name="Magento\Checkout\Block\Onepage">
+        <arguments>
+            <argument name="layoutProcessors" xsi:type="array">
+                <item name="AmastyCheckoutExtension" sortOrder="110" xsi:type="object">Dyson\SinglePageCheckout\Plugin\Block\LayoutProcessor</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="\Magento\Framework\View\Page\Config\Renderer">
+        <plugin sortOrder="10" name="Dyson_SinglePageCheckout::remove-amasty-checkout-css" type="Dyson\SinglePageCheckout\Plugin\View\Page\Config\Renderer" />
+    </type>
+
+    <type name="\Amasty\CheckoutCore\Block\Onepage\LayoutProcessor">
+        <plugin name="Dyson_SinglePageCheckout::BlockOnepageLayoutProcessor" type="Dyson\SinglePageCheckout\Plugin\Block\Onepage\LayoutProcessor" />
+    </type>
+
+    <type name="Magento\Checkout\Block\Checkout\AttributeMerger">
+        <plugin name="Dyson_SinglePageCheckout::AttributeMerger" type="Dyson\SinglePageCheckout\Plugin\AttributeMerger" sortOrder = "1"/>
+    </type>
+
+    <type name="Magento\Checkout\Model\CompositeConfigProvider">
+        <arguments>
+            <argument name="configProviders" xsi:type="array">
+                <item name="additional_provider" xsi:type="object">Dyson\SinglePageCheckout\Model\Config\ConfigProvider</item>
+                <item name="city_list_provider" xsi:type="object">Dyson\SinglePageCheckout\Model\CheckoutDetailsProvider</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!--<type name="Magento\Checkout\Block\Onepage">
+        <arguments>
+            <argument name="layoutProcessors" xsi:type="array">
+                <item name="addressFormAttributes" xsi:type="object">Dyson\SinglePageCheckout\CachedLayoutProcessor\AddressFormAttributes</item>
+                <item name="directoryData" xsi:type="object">Dyson\SinglePageCheckout\CachedLayoutProcessor\DirectoryData</item>
+                <item name="amastyCheckout" sortOrder="100" xsi:type="object">Dyson\SinglePageCheckout\CachedLayoutProcessor\AmastyCheckout</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <virtualType name="Dyson\SinglePageCheckout\CachedLayoutProcessor\AddressFormAttributes" type="Dyson\SinglePageCheckout\Cache\Wrappers\LayoutProcessorCacheWrapper">
+        <arguments>
+            <argument name="processorClass" xsi:type="string">Magento\Checkout\Block\Checkout\LayoutProcessor</argument>
+            <argument name="cacheVariators" xsi:type="array">
+                <item name="store_id" xsi:type="object">Dyson\SinglePageCheckout\Cache\ConditionVariator\StoreId</item>
+                <item name="is_logged" xsi:type="object">Dyson\SinglePageCheckout\Cache\ConditionVariator\IsLoggedIn</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Dyson\SinglePageCheckout\CachedLayoutProcessor\AmastyCheckout" type="Dyson\SinglePageCheckout\Cache\Wrappers\LayoutProcessorCacheWrapper">
+        <arguments>
+            <argument name="processorClass" xsi:type="string">Amasty\CheckoutCore\Block\Onepage\LayoutProcessor</argument>
+            <argument name="cacheVariators" xsi:type="array">
+                <item name="store_id" xsi:type="object">Dyson\SinglePageCheckout\Cache\ConditionVariator\StoreId</item>
+                <item name="is_logged" xsi:type="object">Dyson\SinglePageCheckout\Cache\ConditionVariator\IsLoggedIn</item>
+                <item name="is_quote_virtual" xsi:type="object">Dyson\SinglePageCheckout\Cache\ConditionVariator\IsVirtual</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Dyson\SinglePageCheckout\CachedLayoutProcessor\DirectoryData" type="Dyson\SinglePageCheckout\Cache\Wrappers\LayoutProcessorCacheWrapper">
+        <arguments>
+            <argument name="processorClass" xsi:type="string">Magento\Checkout\Block\Checkout\DirectoryDataProcessor</argument>
+            <argument name="cacheVariators" xsi:type="array">
+                <item name="store_id" xsi:type="object">Dyson\SinglePageCheckout\Cache\ConditionVariator\StoreId</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Dyson\SinglePageCheckout\CachedConfigProvider\AmastyCheckout" type="Dyson\SinglePageCheckout\Cache\Wrappers\ConfigProviderCacheWrapper">
+        <arguments>
+            <argument name="originalClass" xsi:type="string">Dyson\SinglePageCheckout\Model\ConfigProvider</argument>
+            <argument name="cacheVariators" xsi:type="array">
+                <item name="store_id" xsi:type="object">Dyson\SinglePageCheckout\Cache\ConditionVariator\StoreId</item>
+            </argument>
+        </arguments>
+    </virtualType-->
+
+    <type name="Amasty\CheckoutCore\Block\Onepage\LayoutProcessor">
+        <plugin name="Dyson_SinglePageCheckout::DialcodeLayoutProcessor" type="Dyson\SinglePageCheckout\Plugin\Block\DialcodeLayoutProcessor" sortOrder="500" />
+    </type>
+
+    <type name="Amasty\CheckoutCore\Block\Onepage\LayoutProcessor">
+        <plugin name="Dyson_SinglePageCheckout::CityDropdownLayoutProcessor" type="Dyson\SinglePageCheckout\Plugin\Block\CityDropdownLayoutProcessor" />
+    </type>
+
+    <type name="Amasty\Checkout\Block\Onepage\LayoutProcessor\CustomPlaceOrderButton">
+        <plugin name="Dyson_SinglePageCheckout::CustomPlaceOrderButton" type="Dyson\SinglePageCheckout\Plugin\Block\Onepage\LayoutProcessor\CustomPlaceOrderButton" />
+    </type>
+
+    <preference for="Magento\CheckoutAgreements\Model\AgreementsConfigProvider" type="Dyson\SinglePageCheckout\Model\AgreementsConfigProvider" />
+</config>

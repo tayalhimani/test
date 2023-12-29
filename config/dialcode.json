@@ -1,0 +1,44 @@
+{
+    "MX": {
+       "dialcode": "+52"
+    },
+    "SG": {
+        "dialcode": "+65",
+        "shipping_validation": "telephone-sg",
+        "billing_validation": "telephone-sg-bill"
+    },
+    "TR": {
+        "std_code" : "5",
+        "dialcode": ["+90 5","+90"],
+        "shipping_validation": "phoneTRValidation",
+        "billing_validation": "phoneTRValidation"
+    },
+    "CZ": {
+        "dialcode": "+420",
+        "shipping_validation": "phoneCZValidation",
+        "billing_validation": "phoneCZValidation"
+    },
+    "SK": {
+        "dialcode": "+421",
+        "shipping_validation": "phoneSKValidation",
+        "billing_validation": "phoneSKValidation"
+    },
+    "UAE": {
+        "dialcode": "05-"
+    },
+    "AE": {
+        "dialcode": "05-"
+    },
+    "SA": {
+        "dialcode": "05-"
+    },
+    "IL": {
+        "dialcode": "05-"
+    },
+    "IN" : {
+         "dialcode": "+91"
+    },
+    "HK" : {
+        "dialcode": ["+852","+853"]
+    }
+}
