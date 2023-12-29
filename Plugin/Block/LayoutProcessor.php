@@ -1,15 +1,14 @@
 <?php
 
-namespace Dyson\SinglePageCheckout\Plugin\Block;
+namespace Dyson\AmastyCheckoutExtension\Plugin\Block;
 
-use Amasty\CheckoutCore\Model\Config;
+use Amasty\Checkout\Model\Config;
 use Magento\Checkout\Block\Checkout\LayoutProcessorInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Checkout\Helper\Data as CheckoutHelper;
-use Amasty\CheckoutCore\Model\Config\Source\CustomerRegistration;
 
 class LayoutProcessor implements LayoutProcessorInterface
 {
@@ -21,12 +20,12 @@ class LayoutProcessor implements LayoutProcessorInterface
     private $priceCurrency;
 
     /**
-     * @var \Amasty\CheckoutGiftWrap\Model\Gift\Messages
+     * @var \Amasty\Checkout\Model\Gift\Messages
      */
     private $giftMessages;
 
     /**
-     * @var \Amasty\CheckoutCore\Api\FeeRepositoryInterface
+     * @var \Amasty\Checkout\Api\FeeRepositoryInterface
      */
     private $feeRepository;
 
@@ -36,19 +35,14 @@ class LayoutProcessor implements LayoutProcessorInterface
     private $checkoutSession;
 
     /**
-     * @var \Amasty\CheckoutDeliveryDate\Model\ConfigProvider
+     * @var \Amasty\Checkout\Model\DeliveryDate
      */
     private $deliveryDate;
 
     /**
-     * @var \Amasty\CheckoutDeliveryDate\Model\Delivery
+     * @var \Amasty\Checkout\Model\Delivery
      */
     private $delivery;
-
-    /**
-     * @var \Amasty\CheckoutDeliveryDate\Model\DeliveryDateProvider
-     */
-    private $deliveryDateProvider;
 
     /**
      * @var StoreManagerInterface
@@ -56,7 +50,7 @@ class LayoutProcessor implements LayoutProcessorInterface
     private $storeManager;
 
     /**
-     * @var \Amasty\CheckoutCore\Plugin\Checkout\Block\Checkout\AttributeMerger
+     * @var \Amasty\Checkout\Plugin\AttributeMerger
      */
     private $attributeMerger;
 
@@ -71,12 +65,12 @@ class LayoutProcessor implements LayoutProcessorInterface
     private $subscriber;
 
     /**
-     * @var \Amasty\CheckoutCore\Model\Config
+     * @var \Amasty\Checkout\Model\Config
      */
     private $checkoutConfig;
 
     /**
-     * @var \Amasty\CheckoutCore\Model\Utility
+     * @var \Amasty\Checkout\Model\Utility
      */
     private $utility;
 
@@ -86,7 +80,7 @@ class LayoutProcessor implements LayoutProcessorInterface
     private $checkoutHelper;
 
     /**
-     * @var \Amasty\CheckoutCore\Model\ModuleEnable
+     * @var \Amasty\Checkout\Model\ModuleEnable
      */
     private $moduleEnable;
 
@@ -101,7 +95,7 @@ class LayoutProcessor implements LayoutProcessorInterface
     private $walker;
 
     /**
-     * @var \Amasty\CheckoutCore\Model\AdditionalFieldsManagement
+     * @var \Amasty\Checkout\Model\AdditionalFieldsManagement
      */
     private $additionalFieldsManagement;
 
@@ -110,43 +104,27 @@ class LayoutProcessor implements LayoutProcessorInterface
      */
     private $serializer;
 
-    /**
-     * @var \Amasty\CheckoutStyleSwitcher\Model\ConfigProvider
-     */
-    private $configProvider;
-
-    /**
-     * @var \Amasty\CheckoutGiftWrap\Model\ConfigProvider
-     */
-    private $giftConfigProvider;
-
-    /**
-     * @var \Dyson\SinglePageCheckout\Helper\Data
-     */
-    private $singlePageCheckoutHelper;
+    private $dataHelper;
 
     public function __construct(
         PriceCurrencyInterface $priceCurrency,
         CheckoutHelper $checkoutHelper,
-        \Amasty\CheckoutGiftWrap\Model\Messages $giftMessages,
-        \Amasty\CheckoutCore\Api\FeeRepositoryInterface $feeRepository,
+        \Amasty\Checkout\Model\Gift\Messages $giftMessages,
+        \Amasty\Checkout\Api\FeeRepositoryInterface $feeRepository,
         \Magento\Checkout\Model\Session $checkoutSession,
-        \Amasty\CheckoutDeliveryDate\Model\ConfigProvider $deliveryDate,
+        \Amasty\Checkout\Model\DeliveryDate $deliveryDate,
         StoreManagerInterface $storeManager,
-        \Amasty\CheckoutDeliveryDate\Model\Delivery $delivery,
-        \Amasty\CheckoutCore\Plugin\Checkout\Block\Checkout\AttributeMerger $attributeMerger,
+        \Amasty\Checkout\Model\Delivery $delivery,
+        \Amasty\Checkout\Plugin\AttributeMerger $attributeMerger,
         \Magento\Customer\Model\Session $customerSession,
         \Magento\Newsletter\Model\Subscriber $subscriber,
-        \Amasty\CheckoutCore\Model\Config $checkoutConfig,
-        \Amasty\CheckoutCore\Model\Utility $utility,
-        \Amasty\CheckoutCore\Model\ModuleEnable $moduleEnable,
-        \Amasty\CheckoutCore\Block\Onepage\LayoutWalkerFactory $walkerFactory,
-        \Amasty\CheckoutCore\Model\AdditionalFieldsManagement $additionalFieldsManagement,
+        \Amasty\Checkout\Model\Config $checkoutConfig,
+        \Amasty\Checkout\Model\Utility $utility,
+        \Amasty\Checkout\Model\ModuleEnable $moduleEnable,
+        \Amasty\Checkout\Block\Onepage\LayoutWalkerFactory $walkerFactory,
+        \Amasty\Checkout\Model\AdditionalFieldsManagement $additionalFieldsManagement,
         \Amasty\Base\Model\Serializer $serializer,
-        \Amasty\CheckoutStyleSwitcher\Model\ConfigProvider $configProvider,
-        \Amasty\CheckoutGiftWrap\Model\ConfigProvider $giftConfigProvider,
-        \Amasty\CheckoutDeliveryDate\Model\DeliveryDateProvider $deliveryDateProvider,
-        \Dyson\SinglePageCheckout\Helper\Data $singlePageCheckoutHelper
+        \Dyson\AmastyCheckoutExtension\Helper\Data $dataHelper
     ) {
         $this->checkoutHelper = $checkoutHelper;
         $this->priceCurrency = $priceCurrency;
@@ -154,7 +132,6 @@ class LayoutProcessor implements LayoutProcessorInterface
         $this->feeRepository = $feeRepository;
         $this->checkoutSession = $checkoutSession;
         $this->deliveryDate = $deliveryDate;
-        $this->deliveryDateProvider = $deliveryDateProvider;
         $this->delivery = $delivery;
         $this->storeManager = $storeManager;
         $this->attributeMerger = $attributeMerger;
@@ -166,9 +143,7 @@ class LayoutProcessor implements LayoutProcessorInterface
         $this->walkerFactory = $walkerFactory;
         $this->additionalFieldsManagement = $additionalFieldsManagement;
         $this->serializer = $serializer;
-        $this->configProvider = $configProvider;
-        $this->giftConfigProvider = $giftConfigProvider;
-        $this->singlePageCheckoutHelper = $singlePageCheckoutHelper;
+        $this->dataHelper = $dataHelper;
     }
 
     /**
@@ -176,12 +151,12 @@ class LayoutProcessor implements LayoutProcessorInterface
      */
     public function process($jsLayout)
     {
-        if ($this->singlePageCheckoutHelper->getCityEnableField()) {
+        if ($this->dataHelper->getCityEnableField()) {
             if (!isset($jsLayout['components']['checkoutProvider']['dictionaries']['city'])) {
                 $jsLayout['components']['checkoutProvider']['dictionaries']['city'] = $this->getCityOptions();
             }
         }
-
+        
         if (!$this->checkoutConfig->isEnabled()) {
             return $jsLayout;
         }
@@ -192,7 +167,7 @@ class LayoutProcessor implements LayoutProcessorInterface
         $customField = [
             'component' => 'Magento_Ui/js/form/components/button',
             'config' => [
-                'template' => 'Dyson_SinglePageCheckout/gv/continue-to-payment-template' // Merging AmastyCheckoutExtension
+                'template' => 'Dyson_AmastyCheckoutExtension/gv/continue-to-payment-template'
             ],
             'title' => __('Continue to payment'),
             'sortOrder' => 505,
@@ -200,16 +175,17 @@ class LayoutProcessor implements LayoutProcessorInterface
         ];
 
         $jsLayout['components']['checkout']['children']['steps']['children']['shipping-step']
-        ['children']['shippingAddress']['children']['shipping-address-fieldset']['children']['continue_to_payment'] = $customField;;
+        ['children']['shippingAddress']['children']['shipping-address-fieldset']['children']['continue_to_payment'] = $customField;
+        ;
 
         $this->walker = $this->walkerFactory->create(['layoutArray' => $jsLayout]);
 
         $this->setCheckoutTemplate();
 
-       // if ($blockInfo = $this->checkoutConfig->getBlockInfo('block_order_summary')) {
-            //$blockInfo = $this->serializer->unserialize($blockInfo);
-           // $this->walker->setValue('{CHECKOUT}.>>.sidebar.>>.summary.config.summaryLabel', $blockInfo['value']);
-       // }
+        if ($blockInfo = $this->checkoutConfig->getBlockInfo('block_order_summary')) {
+            $blockInfo = $this->serializer->unserialize($blockInfo);
+            $this->walker->setValue('{CHECKOUT}.>>.sidebar.>>.summary.config.summaryLabel', $blockInfo['value']);
+        }
 
         $this->setRequiredField();
         $this->processAdditionalStepLayout();
@@ -221,64 +197,61 @@ class LayoutProcessor implements LayoutProcessorInterface
         $this->processGiftLayout();
         $this->processShippingLayout();
 
-       /* $this->walker->setValue(
+        $this->walker->setValue(
             'components.checkoutProvider.amdiscount.isNeedToReloadShipping',
             $this->checkoutConfig->isReloadCheckoutShipping()
-        );*/
+        );
 
         /**
          * Start of GV edits by SB
          */
-        //Change to use GV templates whether or not the checkout items editable is enabled Merging for IN Market
-        if ($this->singlePageCheckoutHelper->isPincodeModuleEnabled()) {
-            if ($this->checkoutConfig->isCheckoutItemsEditable()) {
-                $this->walker->setValue(
-                    '{CART_ITEMS}.>>.details.component',
-                    'Dyson_SinglePageCheckout/js/gv/checkout-summary-item-details'
-                );
-                $this->walker->setValue('{CART_ITEMS}.component', 'Dyson_SinglePageCheckout/js/gv/checkout-summary-cart-items');
-            } else {
-                $this->walker->setValue(
-                    '{CART_ITEMS}.>>.details.component',
-                    'Dyson_SinglePageCheckout/js/gv/checkout-summary-item-details'
-                );
-                $this->walker->setValue('{CART_ITEMS}.component', 'Dyson_SinglePageCheckout/js/gv/checkout-summary-cart-items');
-            }
+        //Change to use GV templates whether or not the checkout items editable is enabled
+        if ($this->checkoutConfig->isCheckoutItemsEditable()) {
+            $this->walker->setValue(
+                '{CART_ITEMS}.>>.details.component',
+                'Dyson_AmastyCheckoutExtension/js/gv/checkout-summary-item-details'
+            );
+            $this->walker->setValue('{CART_ITEMS}.component', 'Dyson_AmastyCheckoutExtension/js/gv/checkout-summary-cart-items');
+        } else {
+            $this->walker->setValue(
+                '{CART_ITEMS}.>>.details.component',
+                'Dyson_AmastyCheckoutExtension/js/gv/checkout-summary-item-details'
+            );
+            $this->walker->setValue('{CART_ITEMS}.component', 'Dyson_AmastyCheckoutExtension/js/gv/checkout-summary-cart-items');
         }
 
         //Change totals templates and child js to GV ones
-        // $this->walker->setValue(
-        //     '{SIDEBAR}.>>.summary.>>.totals.config.template',
-        //     'Dyson_AmastyCheckoutExtension/gv/summary-totals'
-        // );
-
+        $this->walker->setValue(
+            '{SIDEBAR}.>>.summary.>>.totals.config.template',
+            'Dyson_AmastyCheckoutExtension/gv/summary-totals'
+        );
         //js to override existing templates
-        // $this->walker->setValue(
-        //     '{SIDEBAR}.>>.summary.>>.totals.children.subtotal.component',
-        //     'Dyson_AmastyCheckoutExtension/js/gv/checkout-summary-subtotal'
-        // );
-        // $this->walker->setValue(
-        //     '{SIDEBAR}.>>.summary.>>.totals.children.shipping.component',
-        //     'Dyson_AmastyCheckoutExtension/js/gv/checkout-summary-shipping'
-        // );
-        // $this->walker->setValue(
-        //     '{SIDEBAR}.>>.summary.>>.totals.children.grand-total.component',
-        //     'Dyson_AmastyCheckoutExtension/js/gv/checkout-summary-grand-total'
-        // );
-        // $this->walker->setValue(
-        //     '{SIDEBAR}.>>.summary.>>.totals.children.discount.component',
-        //     'Dyson_AmastyCheckoutExtension/js/gv/summary-discount'
-        // );
+        $this->walker->setValue(
+            '{SIDEBAR}.>>.summary.>>.totals.children.subtotal.component',
+            'Dyson_AmastyCheckoutExtension/js/gv/checkout-summary-subtotal'
+        );
+        $this->walker->setValue(
+            '{SIDEBAR}.>>.summary.>>.totals.children.shipping.component',
+            'Dyson_AmastyCheckoutExtension/js/gv/checkout-summary-shipping'
+        );
+        $this->walker->setValue(
+            '{SIDEBAR}.>>.summary.>>.totals.children.grand-total.component',
+            'Dyson_AmastyCheckoutExtension/js/gv/checkout-summary-grand-total'
+        );
+        $this->walker->setValue(
+            '{SIDEBAR}.>>.summary.>>.totals.children.discount.component',
+            'Dyson_AmastyCheckoutExtension/js/gv/summary-discount'
+        );
 
         //new element for edit order button
-        // $this->walker->setValue(
-        //     '{SIDEBAR}.>>.summary.>>.totals.children.edit-order.component',
-        //     'Dyson_AmastyCheckoutExtension/js/gv/edit-order'
-        // );
-        // $this->walker->setValue(
-        //     '{SIDEBAR}.>>.summary.>>.totals.children.edit-order.sortOrder',
-        //     200
-        // );
+        $this->walker->setValue(
+            '{SIDEBAR}.>>.summary.>>.totals.children.edit-order.component',
+            'Dyson_AmastyCheckoutExtension/js/gv/edit-order'
+        );
+        $this->walker->setValue(
+            '{SIDEBAR}.>>.summary.>>.totals.children.edit-order.sortOrder',
+            200
+        );
         /**
          * End of GV edits by SB
          */
@@ -332,7 +305,7 @@ class LayoutProcessor implements LayoutProcessorInterface
         if (!$this->checkoutSession->getQuote()->isVirtual()) {
             $layout = $this->checkoutConfig->getLayoutTemplate();
         }
-        $this->walker->setValue('{CHECKOUT}.config.template', 'Amasty_CheckoutCore/onepage/' . $layout);
+        $this->walker->setValue('{CHECKOUT}.config.template', 'Amasty_Checkout/onepage/' . $layout);
 
         $this->walker->setValue('{CHECKOUT}.config.additionalClasses', $this->getAdditionalCheckoutClasses());
     }
@@ -342,18 +315,18 @@ class LayoutProcessor implements LayoutProcessorInterface
      */
     protected function getAdditionalCheckoutClasses()
     {
-        $position = $this->configProvider->getPlaceOrderPosition();
+        $position = $this->checkoutConfig->getPlaceOrderPosition();
         $frontClasses = '';
         switch ($position) {
-            case \Amasty\CheckoutStyleSwitcher\Model\Config\Source\PlaceButtonLayout::FIXED_TOP:
+            case \Amasty\Checkout\Model\Config\Source\PlaceButtonLayout::FIXED_TOP:
                 $frontClasses .= ' am-submit-fixed -top';
                 break;
-            case \Amasty\CheckoutStyleSwitcher\Model\Config\Source\PlaceButtonLayout::FIXED_BOTTOM:
+            case \Amasty\Checkout\Model\Config\Source\PlaceButtonLayout::FIXED_BOTTOM:
                 $frontClasses .= ' am-submit-fixed -bottom';
                 break;
-            case \Amasty\CheckoutStyleSwitcher\Model\Config\Source\PlaceButtonLayout::SUMMARY:
+            case \Amasty\Checkout\Model\Config\Source\PlaceButtonLayout::SUMMARY:
                 $frontClasses .= ' am-submit-summary';
-                $this->walker->setValue('{SIDEBAR}.>>.place-button.component', 'Amasty_CheckoutStyleSwitcher/js/view/place-button');
+                $this->walker->setValue('{SIDEBAR}.>>.place-button.component', 'Amasty_Checkout/js/view/place-button');
                 break;
         }
 
@@ -374,7 +347,7 @@ class LayoutProcessor implements LayoutProcessorInterface
             $this->walker->setValue('{ADDITIONAL_STEP}.>>.comment.default', $fieldsValue->getComment());
         }
 
-        if ($this->checkoutConfig->getAdditionalOptions('create_account') === CustomerRegistration::NO
+        if ($this->checkoutConfig->getAdditionalOptions('create_account') === '0'
             || $this->checkoutSession->getQuote()->getCustomer()->getId() !== null
         ) {
             $this->walker->unsetByPath('{ADDITIONAL_STEP}.>>.register');
@@ -385,7 +358,7 @@ class LayoutProcessor implements LayoutProcessorInterface
             } elseif ($fieldsValue->getDateOfBirth()) {
                 $this->walker->setValue('{ADDITIONAL_STEP}.>>.date_of_birth.default', $fieldsValue->getDateOfBirth());
             }
-            if ($this->checkoutConfig->getAdditionalOptions('create_account') === CustomerRegistration::AFTER_PLACING) {
+            if ($this->checkoutConfig->getAdditionalOptions('create_account') === '1') {
                 $registerChecked = (bool)$this->checkoutConfig->getAdditionalOptions('create_account_checked');
                 if ($fieldsValue->getRegister() !== null) {
                     $registerChecked = (bool)$fieldsValue->getRegister();
@@ -411,7 +384,7 @@ class LayoutProcessor implements LayoutProcessorInterface
     /**
      * Visibility and status if the subscribe checkbox
      *
-     * @param \Amasty\CheckoutCore\Model\AdditionalFields $fieldsValue
+     * @param \Amasty\Checkout\Model\AdditionalFields $fieldsValue
      */
     private function processNewsletterLayout($fieldsValue)
     {
@@ -444,10 +417,10 @@ class LayoutProcessor implements LayoutProcessorInterface
      */
     private function processGiftLayout()
     {
-        if (!$this->giftConfigProvider->isGiftWrapEnabled()) {
+        if (!$this->checkoutConfig->isGiftWrapEnabled()) {
             $this->walker->unsetByPath('{GIFT_WRAP}');
         } else {
-            $amount = $this->giftConfigProvider->getGiftWrapFee();
+            $amount = $this->checkoutConfig->getGiftWrapFee();
 
             $rate = $this->storeManager->getStore()->getBaseCurrency()->getRate(
                 $this->storeManager->getStore()->getCurrentCurrency()
@@ -486,7 +459,7 @@ class LayoutProcessor implements LayoutProcessorInterface
                     ->setData('item_id', $key)
                     ->toArray(['item_id', 'sender', 'recipient', 'message', 'title']);
 
-                $node['component'] = 'Amasty_CheckoutGiftWrap/js/view/additional/gift-messages/message';
+                $node['component'] = 'Amasty_Checkout/js/view/additional/gift-messages/message';
                 if ($key) {
                     $itemMessage['children'][] = $node;
                 } else {
@@ -510,7 +483,7 @@ class LayoutProcessor implements LayoutProcessorInterface
          */
         $this->walker->unsetByPath('{SIDEBAR}.>>.shipping-information');
 
-        if (!$this->deliveryDate->isDeliveryDateEnabled() || $this->checkoutSession->getQuote()->isVirtual()) {
+        if (!$this->checkoutConfig->getDeliveryDateConfig('enabled') || $this->checkoutSession->getQuote()->isVirtual()) {
             $this->walker->unsetByPath('{AMCHECKOUT_DELIVERY_DATE}');
         } else {
             $this->walker->setValue(
@@ -518,7 +491,7 @@ class LayoutProcessor implements LayoutProcessorInterface
                 $this->deliveryDate->getDeliveryDays()
             );
 
-            if ($this->deliveryDate->isDeliveryDateRequired()) {
+            if ($this->checkoutConfig->getDeliveryDateConfig('date_required')) {
                 $this->walker->setValue(
                     '{AMCHECKOUT_DELIVERY_DATE}.>>.date.validation.required-entry',
                     'true'
@@ -530,7 +503,7 @@ class LayoutProcessor implements LayoutProcessorInterface
                 '{AMCHECKOUT_DELIVERY_DATE}.>>.time.options',
                 $this->deliveryDate->getDeliveryHours()
             );
-            $delivery = $this->deliveryDateProvider->findByQuoteId($this->checkoutSession->getQuoteId());
+            $delivery = $this->delivery->findByQuoteId($this->checkoutSession->getQuoteId());
 
             $amcheckoutDelivery = [
                 'date' => $delivery->getData('date'),
@@ -539,10 +512,10 @@ class LayoutProcessor implements LayoutProcessorInterface
             ];
             $this->walker->setValue('components.checkoutProvider.amcheckoutDelivery', $amcheckoutDelivery);
 
-            if (!$this->deliveryDate->isCommentEnabled()) {
+            if (!$this->checkoutConfig->getDeliveryDateConfig('delivery_comment_enable')) {
                 $this->walker->unsetByPath('{AMCHECKOUT_DELIVERY_DATE}.>>.comment');
             } else {
-                $comment = (string)$this->deliveryDate->getDefaultComment();
+                $comment = (string)$this->checkoutConfig->getDeliveryDateConfig('delivery_comment_default');
                 $this->walker->setValue('{AMCHECKOUT_DELIVERY_DATE}.>>.comment.placeholder', $comment);
             }
         }
@@ -570,8 +543,8 @@ class LayoutProcessor implements LayoutProcessorInterface
         $components = $this->walker->getValue('{SHIPPING_ADDRESS_FIELDSET}.>>');
         foreach ($attributeConfig as $field => $config) {
             if (isset($components[$field]) && !isset($components[$field]['skipValidation'])) {
-               // $components[$field]['skipValidation'] = !$config->isRequired();
-                //$components[$field]['validation']['required-entry'] = $config->isRequired();
+                $components[$field]['skipValidation'] = !$config->isRequired();
+                $components[$field]['validation']['required-entry'] = $config->isRequired();
             }
         }
 
@@ -600,7 +573,7 @@ class LayoutProcessor implements LayoutProcessorInterface
                 //replace agreement validation
                 $this->walker->setValue(
                     '{PAYMENT}.>>.additional-payment-validators.>>.agreements-validator.component',
-                    'Amasty_CheckoutCore/js/view/validators/agreement-validation'
+                    'Amasty_Checkout/js/view/validators/agreement-validation'
                 );
             }
         }
@@ -661,7 +634,7 @@ class LayoutProcessor implements LayoutProcessorInterface
      */
     private function sortFields(&$fields)
     {
-        uasort($fields, function($firstField, $secondField) {
+        uasort($fields, function ($firstField, $secondField) {
             if (isset($firstField['sortOrder']) && isset($secondField['sortOrder'])) {
                 return $firstField['sortOrder'] - $secondField['sortOrder'];
             }
@@ -680,7 +653,7 @@ class LayoutProcessor implements LayoutProcessorInterface
 
             $shippingAddressData = [
                 'displayArea' => 'address-list',
-                'component' => 'Amasty_CheckoutCore/js/view/shipping-address/shipping-address',
+                'component' => 'Amasty_Checkout/js/view/shipping-address/shipping-address',
                 'provider' => 'checkoutProvider',
                 'deps' => 'checkoutProvider',
                 'dataScopePrefix' => 'shippingAddress'
@@ -703,7 +676,7 @@ class LayoutProcessor implements LayoutProcessorInterface
      */
     private function processBillingAddressRelocation()
     {
-        if ($this->configProvider->getBillingAddressDisplayOn() == self::BILLING_ADDRESS_POSITION) {
+        if ($this->checkoutConfig->getBillingAddressDisplayOn() == self::BILLING_ADDRESS_POSITION) {
             $billingAddress = $this->walker->getValue('{PAYMENT}.>>.afterMethods.>>.billing-address-form');
             $this->walker->setValue('{SHIPPING_ADDRESS}.>>.billing-address-form', $billingAddress);
 
@@ -720,6 +693,6 @@ class LayoutProcessor implements LayoutProcessorInterface
      */
     private function getCityOptions()
     {
-        return  $this->singlePageCheckoutHelper->getCityOptions();
+        return  $this->dataHelper->getCityOptions();
     }
 }

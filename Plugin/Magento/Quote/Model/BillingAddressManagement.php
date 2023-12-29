@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Dyson\SinglePageCheckout\Plugin\Magento\Quote\Model;
+namespace Dyson\AmastyCheckoutExtension\Plugin\Magento\Quote\Model;
 
 class BillingAddressManagement
 {
@@ -20,14 +20,17 @@ class BillingAddressManagement
         \Magento\Quote\Api\Data\AddressInterface $address,
         $useForShipping = false
     ) {
+
         $extAttributes = $address->getExtensionAttributes();
         if (!empty($extAttributes)) {
+
             try {
                 $address->setDialcode($extAttributes->getDialcode());
             } catch (\Exception $e) {
                 $this->logger->critical($e->getMessage());
             }
+
         }
-        return [$cartId,$address,$useForShipping];
+
     }
 }

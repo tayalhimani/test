@@ -1,5 +1,5 @@
 {
-    "name": "dyson/module-singlepagecheckout",
+    "name": "dyson/module-amastycheckoutextension",
     "description": "...",
     "type": "magento2-module",
     "license": [
@@ -18,7 +18,7 @@
             "registration.php"
         ],
         "psr-4": {
-            "Dyson\\SinglePageCheckout\\": ""
+            "Dyson\\AmastyCheckoutExtension\\": ""
         }
     }
 }

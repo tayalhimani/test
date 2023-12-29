@@ -1,9 +1,8 @@
 define([
     'jquery',
-    'uiRegistry',
     'Magento_Checkout/js/model/payment-service',
     'mage/validation'
-], function ($, registry, paymentService) {
+], function ($, paymentService) {
 
     return function(config, element) {
 
@@ -23,9 +22,38 @@ define([
         $document.on('click', '[data-index="continue_to_payment"]', continueSection);
         $document.on('click', '.checkout-block--complete', editSection);
         $document.on('click', '.payment-method-content .action-update', updateAddress);
+        $document.on('change', '.field[name="shippingAddress.city"] select', cityOnChange);
+        $document.on('change', '.field[name="shippingAddress.region"] select', regionOnChange);
+
+        function regionOnChange(){
+            let regionVal = $(this).val();
+            if (regionVal != "") {
+                if ($(this).next(".field-error").length) {
+                    $(this).next(".field-error").remove();
+                }
+             $(this).closest(".field").removeClass("_error");
+         }
+            if($(this).hasClass('required-entry')){
+                $(this).next(".region-error").remove();
+                $(this).removeClass('required-entry');
+
+            }
+        }
+
+        function cityOnChange () {
+            if ($('.dyson-sa').length || $('.dyson-th').length) {
+                let cityVal = $(this).val();
+                if (cityVal != "") {
+                    if ($(this).next(".field-error").length) {
+                        $(this).next(".field-error").remove();
+                    }
+                    $(this).closest(".field").removeClass("_error");
+                }
+            }
+            return;
+        }
 
         function startCheckout() {
-            console.log('Loading SPC');
             // When loaded, open our first checkout panel
             checkoutAmends();
             openPanel('1');
@@ -40,6 +68,23 @@ define([
         }
 
         function continueSection() {
+
+            if ($('.dyson-sa').length ) {
+                let cityValue = $('.field[name="shippingAddress.city"] select').val();
+                let cityElem = $('.field[name="shippingAddress.city"]');
+                if (cityValue == '') {
+                    let errorDiv = `<div class="field-error">
+                                        <span>${$.mage.__("This is a required field.")}</span>
+                                    </div>`;
+                    setTimeout(function () {
+                        if (cityElem.find(".select").next(".field-error").length) {
+                            cityElem.find(".select").nextAll(".field-error").remove();
+                        }
+                        cityElem.addClass('_error');
+                        $(errorDiv).insertAfter(cityElem.find(".control .select"));
+                    }, 3000);
+                }
+            }
             /*
              * Hack for validation issue with IN pincode check
              * Check for whichever module is available.
@@ -58,85 +103,12 @@ define([
                     billingAddressPayuCity.addClass('in-error');
                 }
             };
-             //Adding Store Pickup Validation
 
-            //Adding Validation For Store Pickup
-            if( $('.pickup.tab-group__tab--active').length) {
-                if (!$("input[name='store[collection_point]']:checked").val()) {
-                    $('.cppickup-select .collection-not-selected-error').show();
-                    $('.cppickup-select .radio-choice input[type="radio"]:first-of-type').focus();
-                    return false;
-                }
-            }
-            /**
-             * Custom method to Invoke Shipping Field Validation - validateCustomerFields()
-             * But as this is failing sometimes & also not the correct way so We are validating in Default Magento Way
-             */
-            var shipping = registry.get('checkout.steps.shipping-step.shippingAddress');
-            var shippingDataValid = shipping.validateShippingInformation();
-            if(shippingDataValid)
+            // IF validation comes back true
+            if(validateCustomerFields())
             {
-                //renderPaymentMethods();
+                renderPaymentMethods();
                 successPanel();
-            }
-            // PL
-            if ($('.dyson-pl').length) {
-                var checkElementExists = setInterval(function () {
-                    $('.field[name="billingAddressadyen_cc.firstname"]').addClass('required');
-                    $('.field[name="billingAddressadyen_cc.lastname"]').addClass('required');
-                    $('.field[name="billingAddressadyen_cc.postcode"]').addClass('required');
-                    $('.field[name="billingAddressadyen_cc.telephone"]').addClass('required');
-                    $('.field[name="billingAddressadyen_hpp.firstname"]').addClass('required');
-                    $('.field[name="billingAddressadyen_hpp.firstname"]').addClass('required');
-                    $('.field[name="billingAddressadyen_hpp.telephone"]').addClass('required');
-
-                    if ($('.field[name="billingAddressadyen_cc.firstname"]').hasClass('required')) {
-                        clearInterval(checkElementExists);
-                    }
-                }, 100);
-            }
-            // TR
-            if ($('.dyson-tr').length) {
-                var checkElementExists = setInterval(function () {
-                    $('.field[name="billingAddressadyen_cc.firstname"]').addClass('required');
-                    $('.field[name="billingAddressadyen_cc.lastname"]').addClass('required');
-                    $('.field[name="billingAddressiyzipay.firstname"]').addClass('required');
-                    $('.field[name="billingAddressiyzipay.lastname"]').addClass('required');
-
-                    if ($('.field[name="billingAddressadyen_cc.firstname"]').hasClass('required')) {
-                        clearInterval(checkElementExists);
-                    }
-                }, 100);
-            }
-            // SG
-            if ($('.dyson-sg').length) {
-                var checkElementExists = setInterval(function () {
-                    $('.field[name="billingAddressadyen_cc.firstname"]').addClass('required');
-                    $('.field[name="billingAddressadyen_cc.lastname"]').addClass('required');
-                    if ($('.field[name="billingAddressadyen_cc.firstname"]').hasClass('required')) {
-                        clearInterval(checkElementExists);
-                    }
-                }, 100);
-            }
-            // SK
-            if ($('.dyson-sk').length) {
-                var checkElementExists = setInterval(function () {
-                    $('.field[name="billingAddressadyen_cc.firstname"]').addClass('required');
-                    $('.field[name="billingAddressadyen_cc.lastname"]').addClass('required');
-                    if ($('.field[name="billingAddressadyen_cc.firstname"]').hasClass('required')) {
-                        clearInterval(checkElementExists);
-                    }
-                }, 100);
-            }
-            // CZ
-            if ($('.dyson-cz').length || $('.dyson-hu').length || $('.dyson-ro').length || $('.dyson-lv').length || $('.dyson-lt').length || $('.dyson-ee').length || $('.dyson-hr').length){
-                var checkElementExists = setInterval(function () {
-                    $('.field[name="billingAddressadyen_cc.firstname"]').addClass('required');
-                    $('.field[name="billingAddressadyen_cc.lastname"]').addClass('required');
-                    if ($('.field[name="billingAddressadyen_cc.firstname"]').hasClass('required')) {
-                        clearInterval(checkElementExists);
-                    }
-                }, 100);
             }
         }
 
@@ -321,21 +293,31 @@ define([
                 }
             }
 
-            var isCustomerLoggedIn = window.checkoutConfig.isCustomerLoggedIn; // Check if Customer is Logged In
-            var myDysonEnabled = 'myDysonEnabled' in window.checkoutConfig ?  window.checkoutConfig.myDysonEnabled : false; // Check if My Dyson is Enabled
+            var customerEmailFields = $('input#customer-email');
 
-            if(!myDysonEnabled && !isCustomerLoggedIn ) {
-                var customerEmailFields = $('input#customer-email');
-
-                if(!validateEmail(customerEmailFields.val()))
-                {
-                    ret = false;
-                    provokeValidation(customerEmailFields, customerEmailFields.val());
-                    customerEmailFields.focus();
-                    $('.form.form-login').submit();
-                }
+            if(!validateEmail(customerEmailFields.val()))
+            {
+                ret = false;
+                provokeValidation(customerEmailFields, customerEmailFields.val());
+                customerEmailFields.focus();
+                $('.form.form-login[data-role=email-with-possible-login]').submit();
             }
+            // apply custom validation for region selector
+            var regionField = $('.field[name="shippingAddress.city"], .field[name="shippingAddress.region"]').find('select');
+            var regionVal =  regionField.val();
+            var regionpostcode = $('.field[name="shippingAddress.postcode"]').find('input').val();
 
+            if(regionVal == "" && regionpostcode ){
+                var invalidAria = regionField.attr('aria-invalid');
+                if(invalidAria == "false"){
+                    regionField.addClass('required-entry');
+
+                    $.validator.validateSingleElement(regionField,{errorElement:'div',errorClass:'field-error region-error'});
+                    regionField.parents('.field-city').addClass('_error');
+
+                }
+                ret = false;
+            }
             return ret;
 
         }
@@ -351,8 +333,7 @@ define([
 
             if (field.attr('type') == 'number') {
                 field.val(val + "0");
-            }
-            else {
+            } else if(val == "") {
                 field.val(val + " ");
             }
 
@@ -385,8 +366,6 @@ define([
 
             if (paymentMethodCount = loadedPaymentMethods) {
               $('.payment-methods').loader("hide");
-              //MP-13507 fix
-              // This code duplicates payment methods on onepage checkout, thus commenting
               buildTabs();
               clearInterval(checkExist);
             }
@@ -429,15 +408,14 @@ define([
 
               }
           });
-
           var isEnabled = window.checkoutConfig.accordion_payment_enabled;
           // Copy existing markup to our tabs structure
-
           if (!isEnabled) {
-              $('.payment-method .payment-method-title').each(function( index ) {
-                  $(this).clone().appendTo('.checkout-block__tabs__header');
-              });
+            $('.payment-method .payment-method-title').each(function( index ) {
+                $(this).clone().appendTo('.checkout-block__tabs__header');
+            });
           }
+
 
           // Add active state to the first option
           $('.checkout-block__tabs__header').find('.payment-method-title:first-of-type').addClass('payment-method-title--active');
@@ -449,7 +427,8 @@ define([
           $(".payment-method-content[data-tab-content='" + currentActiveTab +"']").addClass('payment-method-content--active');
 
           // Loop through our payment options and show or hide depending on radio button status
-           $(document).on('change', '.checkout-block__tabs__header .payment-method-title input:radio', function() {
+          $('.checkout-block__tabs__header .payment-method-title input:radio').change(function() {
+
               $('.checkout-block__tabs__header .payment-method-title input:radio').each(function () {
                   var $this = $(this);
                   var currentTab = $(this).closest('.payment-method-title').data('tab');

@@ -2,11 +2,5 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attributes.xsd">
     <extension_attributes for="Magento\Quote\Api\Data\AddressInterface">
         <attribute code="dialcode" type="string" />
-        <attribute code="shipping_title_label" type="string" />
-        <attribute code="custom_field_1_shippingAddress" type="string" />
-        <attribute code="custom_field_1" type="string" />
-        <attribute code="custom_field_2" type="string" />
-        <attribute code="delivery_type" type="string" />
-        <attribute code="country_label" type="string" />
     </extension_attributes>
 </config>

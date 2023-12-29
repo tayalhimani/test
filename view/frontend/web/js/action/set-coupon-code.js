@@ -18,24 +18,21 @@ define([
     'Magento_Checkout/js/action/get-payment-information',
     'Magento_Checkout/js/model/totals',
     'Magento_Checkout/js/model/full-screen-loader',
-    'Adyen_Payment/js/model/adyen-payment-service',
-    'Magento_Checkout/js/model/payment-service',
-    'Magento_Ui/js/model/messageList',
-    'accordion'
+    'Magento_Checkout/js/model/payment-service'
 ], function (ko, $, quote, urlManager, errorProcessor, messageContainer, storage, $t, getPaymentInformationAction,
-             totals, fullScreenLoader , adyenPaymentService, paymentService, messageList
+             totals, fullScreenLoader , paymentService
 ) {
     'use strict';
 
     /** @inheritdoc */
     $(document).on("click", "#discount-form .action-apply", function () {
-        let couponField = $("#discount-code").val(),
+        var couponField = $("#discount-code").val(),
             couponStatus = '',
             errorMessage = $t('This is a required field.'),
             add_error_accesibility = () => {
                 setTimeout(() => {
                     $("#discount-form #discount-code-error").attr("aria-live", "assertive");
-                }, 1300);
+                }, 1000);
             }
 
         if (!couponField) {
@@ -44,7 +41,6 @@ define([
         }
 
         add_error_accesibility();
-
     });
 
     $(document).on("click", "#block-discount-heading", function () {
@@ -58,59 +54,6 @@ define([
     });
 
     return function (couponCode, isApplied) {
-
-        var retrievePaymentMethods = function (){
-            fullScreenLoader.startLoader();
-            adyenPaymentService.retrievePaymentMethods().done(function(paymentMethods) {
-                try {
-                    paymentMethods = JSON.parse(paymentMethods);
-                } catch(error) {
-                    console.log(error);
-                    paymentMethods = null;
-                }
-                adyenPaymentService.setPaymentMethods(paymentMethods);
-                fullScreenLoader.stopLoader();
-
-                const clickOnContinueButton = () => {
-                    setTimeout(() => {
-                        $("#discount-form .action-cancel").focus();
-                    }, 1300);
-                };
-
-                const checkoutBlockTabs = $(".checkout-block__tabs").length;
-                const isAccordionEnabled = window.checkoutConfig.accordion_payment_enabled;
-
-                if ((!isAccordionEnabled && checkoutBlockTabs < 1) || !isAccordionEnabled) {
-                    clickOnContinueButton();
-                } else {
-                    setTimeout(() => {
-                        const paymethodNumber = $("#payment-element .accordion-heading").length;
-                        $("#payment-element").hide();
-
-                        if (paymethodNumber > 1) {
-                            setTimeout(() => {
-                                $("#payment-element").accordion({
-                                    'openedState': 'active',
-                                    'collapsible': true,
-                                    'active': false
-                                });
-                            }, 1000);
-                        } else {
-                            $(".payment-tabs__header").addClass('no-accordion');
-                            $(".no-accordion .accordion-content ").show();
-                            $(".no-accordion .accordion-heading").addClass('active cursor-effect');
-                        }
-                        $("#payment-element").show();
-                        $("#discount-form .action-cancel").focus();
-
-                    }, 1300);
-                }
-
-            }).fail (function() {
-                console.log('Fetching the payment methods failed!');
-            });
-        };
-
         var quoteId = quote.getQuoteId(),
             url = urlManager.getApplyCouponUrl(couponCode, quoteId),
             couponStatus = '',
@@ -119,22 +62,18 @@ define([
         fullScreenLoader.startLoader();
 
         return storage.put(
-            url,
-            {},
+            url, {},
             false
         ).done(function (response) {
             var response = JSON.parse(response);
             var deferred;
-
-            //remove payment method
-            quote.paymentMethod(null);
 
             if (response) {
                 deferred = $.Deferred();
 
                 //remove payment method
                 quote.paymentMethod(null);
-
+                paymentService.setPaymentMethods([]);
 
                 var $collapsible = $('[data-collapsible="true"]');
                 // Check if the collapsible widget is already initialized
@@ -142,29 +81,45 @@ define([
                     // If it is initialized, destroy the widget
                     $("#payment-element").accordion('destroy');
                 }
-                // Interchanged the lines to fix the issue with the destroying of collapsible widget via paymentService
-                paymentService.setPaymentMethods([]);
                 isApplied(true);
                 totals.isLoading(true);
-
                 getPaymentInformationAction(deferred);
                 $.when(deferred).done(function () {
                     fullScreenLoader.stopLoader();
                     totals.isLoading(false);
-                    const retrievePaymentMethods_ = () => {
+
+                    const checkoutBlockTabs = $(".checkout-block__tabs").length;
+                    const isAccordionEnabled = window.checkoutConfig.accordion_payment_enabled;
+
+                    if (isAccordionEnabled) {
                         setTimeout(() => {
-                            retrievePaymentMethods();
-                        }, 300);
+                            const paymethodNumber = $("#payment-element .accordion-heading").length;
+                            $("#payment-element").hide();
+
+                            if (paymethodNumber > 1) {
+
+                                $(".payment-tabs__header").removeClass('no-accordion');
+                                $(".accordion-heading").removeClass('active cursor-effect');
+
+                                setTimeout(() => {
+                                    $("#payment-element").accordion({
+                                        'openedState': 'active',
+                                        'collapsible': true,
+                                        'active': false
+                                    });
+                                }, 200);
+                            } else {
+                                $(".payment-tabs__header").addClass('no-accordion');
+                                $(".no-accordion .accordion-content ").show();
+                                $(".no-accordion .accordion-heading").addClass('active cursor-effect');
+                            }
+                            $("#payment-element").show();
+                            $("#discount-form .action-cancel").focus();
+
+                        }, 1000);
                     }
-                    retrievePaymentMethods_();
 
                 });
-                var enableFocus = () => {
-                    setTimeout(() => {
-                        $("#discount-form .action-cancel").focus();
-                    }, 1300);
-                }
-                enableFocus();
             }
             couponStatusDataLayer(couponCode, couponStatus = 'valid');
             couponMessageTypeDataLayer(message + ' ' + couponCode, couponStatus = 'success');
@@ -188,6 +143,7 @@ define([
             }
             addCustomError();
         });
+
     };
 
     /**

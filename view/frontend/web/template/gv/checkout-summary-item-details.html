@@ -2,10 +2,6 @@
 /**
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
- *
- * This file is an override in order to get the delivery message in, because the module overrides the template used
- * by PincodeValidator module. When Sorted Pro is implemented this may need to be removed in order for the new
- * Sorted Pro functionality to take precedent
  */
 -->
 
@@ -32,13 +28,9 @@
             <span class="product-item-quantity__value" data-bind="text: $parent.qty"></span>
         </div>
 
-
-        <!-- Start of section not included in module version of html file -->
-        <div class="product-item-inner-info">
-            <span data-bind="text: getShippingText($parent), attr: {'id': 'dyson__pincodevalidator__shipping__text__' + $parent.item_id}"></span>
+        <div class="product-item-inner-info product-item-inner-info--delivery">
+            <span data-bind="text: getShippingText($parent)"></span>
         </div>
-        <!-- End of section not included in module version of html file -->
-
 
         <div class="product-item-inner-info product-item-inner-info--subtotal">
             <span><!-- ko i18n: 'Subtotal' --><!-- /ko --></span>

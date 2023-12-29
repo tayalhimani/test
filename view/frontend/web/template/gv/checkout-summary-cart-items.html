@@ -1,14 +1,25 @@
-<div class="checkout-block__summary__header">
-  <div class="checkout-block__summary__items__title">
+<div class="checkout-block__summary__header" role="button" aria-expanded="false" tabindex="1">
+  <svg class="icon icon--basket-checkout-nav" viewBox="0 0 48 48">
+      <path d="M36 16c0-6.6-5.4-12-12-12S12 9.4 12 16H4l7.1 26h25.7L44 16h-8zM24 7.9c4.5 0 8.1 3.7 8.1 8.1H15.9c0-4.5 3.6-8.1 8.1-8.1zM33.8 38H14.2l-5-18h29.5l-4.9 18z"></path>
+  </svg>
+  <div class="checkout-nav__section ">
+    <div class="checkout-block__summary__items__title">
     <span data-bind="i18n: 'Order summary'"></span>
   </div>
-
+<div class="checkout-rtl-part">
   <div class="checkout-block__summary__items__count">
-      <translate args="maxCartItemsToDisplay" if="maxCartItemsToDisplay < getItemsQty()"/>
-      <translate args="'of'" if="maxCartItemsToDisplay < getItemsQty()"/>
-      <span data-bind="text: getItemsQty()"></span>
-      <translate args="'item'" if="getItemsQty() === 1"/>
-      <translate args="'items'" if="getItemsQty() > 1"/>
+      <translate args="maxCartItemsToDisplay" if="maxCartItemsToDisplay < checkoutItemsCount()"/>
+      <translate args="'of'" if="maxCartItemsToDisplay < checkoutItemsCount()"/>
+      <span data-bind="text: checkoutItemsCount()"></span>
+      <translate args="'item'" if="checkoutItemsCount() === 1"/>
+      <translate args="'items'" if="checkoutItemsCount() > 1"/>
+  </div>
+  <span class="checkout-block_summary_nav__separator"></span>
+  <div class="checkout-nav__heading-price" >
+      <span class="checkout-nav-price-total" data-bind="i18n: 'Total'"></span>
+      <span class="checkout-nav-price-total-price" data-bind="text: getSubTotal()"></span>
+  </div>
+  </div>
   </div>
 </div>
 
@@ -18,14 +29,14 @@
     </div>
 
     <div class="checkout-block__summary__items__count">
-        <translate args="maxCartItemsToDisplay" if="maxCartItemsToDisplay < getItemsQty()"/>
-        <translate args="'of'" if="maxCartItemsToDisplay < getItemsQty()"/>
-        <span data-bind="text: getItemsQty()"></span>
+        <translate args="maxCartItemsToDisplay" if="maxCartItemsToDisplay < checkoutItemsCount()"/>
+        <translate args="'of'" if="maxCartItemsToDisplay < checkoutItemsCount()"/>
+        <span data-bind="text: checkoutItemsCount()"></span>
 
-        <!-- ko if: getItemsQty() == 1 -->
+        <!-- ko if: checkoutItemsCount() == 1 -->
         <!-- ko i18n: 'Item in Cart' --><!-- /ko -->
         <!-- /ko -->
-        <!-- ko if: getItemsQty() > 1 -->
+        <!-- ko if: checkoutItemsCount() > 1 -->
         <!-- ko i18n: 'Items in Cart' --><!-- /ko -->
         <!-- /ko -->
 

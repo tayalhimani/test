@@ -10,39 +10,34 @@ define([
 
         return wrapper.wrap(setBillingAddressAction, function (originalAction, messageContainer) {
 
-            var billingAddress = quote.billingAddress();
-            var attr = '';
+            let billingAddress = quote.billingAddress();
 
-            if(billingAddress != undefined) {
+            if (billingAddress != null) {
 
                 if (billingAddress['extensionAttributes'] === undefined) {
                     billingAddress['extensionAttributes'] = {};
                 }
 
-                // Condition applicable for Magento 2.3.6 and higher version
-                if (billingAddress['extension_attributes'] === undefined) {
-                    billingAddress['extension_attributes'] = {};
-                }
-
-                if (billingAddress.customAttributes != undefined) {
-                    $.each(billingAddress.customAttributes, function (key, value) {
-
-                        if($.isPlainObject(value)){
-                            attr = value['attribute_code'];
-                            value = value['value'];
-                        }
-
-                        if (attr != '') { // Condition applicable for Magento 2.3.6 and higher version
-                            if(!attr.includes('custom_field')) {
-                                billingAddress['extension_attributes'][attr] = value;
-                            }
+                // you can extract value of extension attribute from any place (in this example using customAttributes approach)
+                _.each(billingAddress.customAttributes, function (value, key) {
+                    if (key === 'dialcode') { // Condition applicable for Magento 2.2.7 and lower version. Need to remove code after all market upgraded to Magento 2.3.6 and higher version.
+                        if (window.checkoutConfig.dialcode) {
+                            billingAddress['extensionAttributes'][key] = window.checkoutConfig.dialcode['dialcode'];
                         } else {
                             billingAddress['extensionAttributes'][key] = value;
                         }
-                    });
-                }
-
+                    }
+                    else if (value.attribute_code === 'dialcode') { // Condition applicable for Magento 2.3.6 and higher version
+                        if (window.checkoutConfig.dialcode) {
+                            billingAddress['extensionAttributes'][value.attribute_code] = window.checkoutConfig.dialcode['dialcode'];
+                        } else {
+                            billingAddress['extensionAttributes'][value.attribute_code] = value.value;
+                        }
+                        
+                    }
+                });
             }
+
             // pass execution to original action ('Magento_Checkout/js/action/set-shipping-information')
             return originalAction(messageContainer);
         });

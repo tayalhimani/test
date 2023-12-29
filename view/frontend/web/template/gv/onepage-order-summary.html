@@ -1,0 +1,6 @@
+<div data-bind="blockLoader: isLoading">
+    <span data-bind="i18n: getNameSummary()" class="checkout-block__summary__title"></span>
+    <!-- ko foreach: elems() -->
+    <!-- ko template: getTemplate() --><!-- /ko -->
+    <!-- /ko -->
+</div>

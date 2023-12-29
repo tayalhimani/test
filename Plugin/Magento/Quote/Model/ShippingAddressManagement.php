@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Dyson\SinglePageCheckout\Plugin\Magento\Quote\Model;
+namespace Dyson\AmastyCheckoutExtension\Plugin\Magento\Quote\Model;
 
 class ShippingAddressManagement
 {
@@ -31,6 +31,5 @@ class ShippingAddressManagement
 
         }
 
-        return [$cartId,$address];
     }
 }

@@ -1,21 +1,9 @@
 <?xml version="1.0"?>
-<!--
-/**
- * @author Goram & Vincent
- * @package Dyson_SinglePageCheckout
- */
--->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-    <module name="Dyson_SinglePageCheckout" setup_version="1.0.2">
+    <module name="Dyson_AmastyCheckoutExtension" setup_version="1.0.4">
         <sequence>
-            <!-- Depend on these modules loading first please. -->
             <module name="Magento_Order"/>
-            <module name="Amasty_Base"/>
-            <module name="Amasty_Geoip"/>
-            <module name="Amasty_Checkout"/>
-            <module name="Adyen_Payment"/>
-            <module name="Amasty_CheckoutCore"/>
-
+            <module name="Dyson_CustomCheckoutFields"/>
         </sequence>
     </module>
 </config>

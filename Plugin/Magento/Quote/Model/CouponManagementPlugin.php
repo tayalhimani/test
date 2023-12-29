@@ -1,5 +1,5 @@
 <?php
-namespace Dyson\SinglePageCheckout\Plugin\Magento\Quote\Model;
+namespace Dyson\AmastyCheckoutExtension\Plugin\Magento\Quote\Model;
 
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Phrase;

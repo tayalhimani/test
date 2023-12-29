@@ -3,9 +3,9 @@
  * City table creation
  * Copyright (C) 2019
  *
- * This file is part of Dyson/SinglePageCheckout.
+ * This file is part of Dyson/AmastyCheckoutExtension.
  *
- * Dyson/SinglePageCheckout is free software: you can redistribute it and/or modify
+ * Dyson/AmastyCheckoutExtension is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -19,21 +19,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Dyson\SinglePageCheckout\Model;
+namespace Dyson\AmastyCheckoutExtension\Model;
 
-use Dyson\SinglePageCheckout\Model\ResourceModel\DysonCity as ResourceDysonCity;
-use Dyson\SinglePageCheckout\Api\Data\DysonCitySearchResultsInterfaceFactory;
+use Dyson\AmastyCheckoutExtension\Model\ResourceModel\DysonCity as ResourceDysonCity;
+use Dyson\AmastyCheckoutExtension\Api\Data\DysonCitySearchResultsInterfaceFactory;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Dyson\SinglePageCheckout\Api\Data\DysonCityInterfaceFactory;
+use Dyson\AmastyCheckoutExtension\Api\Data\DysonCityInterfaceFactory;
 use Magento\Framework\Reflection\DataObjectProcessor;
 use Magento\Framework\Api\ExtensibleDataObjectConverter;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface;
 use Magento\Framework\Exception\CouldNotDeleteException;
-use Dyson\SinglePageCheckout\Model\ResourceModel\DysonCity\CollectionFactory as DysonCityCollectionFactory;
+use Dyson\AmastyCheckoutExtension\Model\ResourceModel\DysonCity\CollectionFactory as DysonCityCollectionFactory;
 use Magento\Framework\Api\DataObjectHelper;
-use Dyson\SinglePageCheckout\Api\DysonCityRepositoryInterface;
+use Dyson\AmastyCheckoutExtension\Api\DysonCityRepositoryInterface;
 use Magento\Store\Model\StoreManagerInterface;
 
 class DysonCityRepository implements DysonCityRepositoryInterface
@@ -104,21 +104,21 @@ class DysonCityRepository implements DysonCityRepositoryInterface
      * {@inheritdoc}
      */
     public function save(
-        \Dyson\SinglePageCheckout\Api\Data\DysonCityInterface $dysonCity
+        \Dyson\AmastyCheckoutExtension\Api\Data\DysonCityInterface $dysonCity
     ) {
         /* if (empty($dysonCity->getStoreId())) {
             $storeId = $this->storeManager->getStore()->getId();
             $dysonCity->setStoreId($storeId);
         } */
-
+        
         $dysonCityData = $this->extensibleDataObjectConverter->toNestedArray(
             $dysonCity,
             [],
-            \Dyson\SinglePageCheckout\Api\Data\DysonCityInterface::class
+            \Dyson\AmastyCheckoutExtension\Api\Data\DysonCityInterface::class
         );
-
+        
         $dysonCityModel = $this->dysonCityFactory->create()->setData($dysonCityData);
-
+        
         try {
             $this->resource->save($dysonCityModel);
         } catch (\Exception $exception) {
@@ -150,22 +150,22 @@ class DysonCityRepository implements DysonCityRepositoryInterface
         \Magento\Framework\Api\SearchCriteriaInterface $criteria
     ) {
         $collection = $this->dysonCityCollectionFactory->create();
-
+        
         $this->extensionAttributesJoinProcessor->process(
             $collection,
-            \Dyson\SinglePageCheckout\Api\Data\DysonCityInterface::class
+            \Dyson\AmastyCheckoutExtension\Api\Data\DysonCityInterface::class
         );
-
+        
         $this->collectionProcessor->process($criteria, $collection);
-
+        
         $searchResults = $this->searchResultsFactory->create();
         $searchResults->setSearchCriteria($criteria);
-
+        
         $items = [];
         foreach ($collection as $model) {
             $items[] = $model->getDataModel();
         }
-
+        
         $searchResults->setItems($items);
         $searchResults->setTotalCount($collection->getSize());
         return $searchResults;
@@ -175,7 +175,7 @@ class DysonCityRepository implements DysonCityRepositoryInterface
      * {@inheritdoc}
      */
     public function delete(
-        \Dyson\SinglePageCheckout\Api\Data\DysonCityInterface $dysonCity
+        \Dyson\AmastyCheckoutExtension\Api\Data\DysonCityInterface $dysonCity
     ) {
         try {
             $dysonCityModel = $this->dysonCityFactory->create();

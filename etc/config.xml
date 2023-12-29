@@ -2,192 +2,23 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
     <default>
         <dyson_singlepagecheckout>
+            <checkout>
+                <billing_title_enabled>0</billing_title_enabled>
+                <billing_title>Billing Address</billing_title>
+            </checkout>
+        </dyson_singlepagecheckout>
+
+        <dyson_singlepagecheckout>
             <telephone>
                 <telephone_message_enabled>0</telephone_message_enabled>
                 <telephone_message>Custom Telephone Message</telephone_message>
             </telephone>
-            <checkout>
-                <billing_title_enabled>0</billing_title_enabled>
-                <billing_title>Billing Address</billing_title>
-                <payment_types_available_push_datalayer>0</payment_types_available_push_datalayer>
-            </checkout>
-            <reload_totals>
-                <reload_totals_enabled>0</reload_totals_enabled>
-            </reload_totals>
-            <country_label_sort_order>
-                <sortorder>109</sortorder>
-            </country_label_sort_order>
-            <prefix_postalcode>
-                <enable_postal_prefix>0</enable_postal_prefix>
-            </prefix_postalcode>
-            <enable_city_dropdown>
-                <enable_city_dropdown_enable>0</enable_city_dropdown_enable>
-                <city_dropdown_caption>Please select your city</city_dropdown_caption>
-            </enable_city_dropdown>
-            <street0_required>
-                <enable_street0_required>0</enable_street0_required>
-            </street0_required>
         </dyson_singlepagecheckout>
 
         <cart>
           <coupon_carts_summary_message>
               <enable>0</enable>
-              <coupon_carts_summary_before_apply>Apply at checkout</coupon_carts_summary_before_apply>
-              <coupon_carts_summary_after_apply>Applied</coupon_carts_summary_after_apply>
           </coupon_carts_summary_message>
         </cart>
-        <sales>
-            <totals_sort>
-                <discount_message>100</discount_message>
-            </totals_sort>
-        </sales>
     </default>
-    <websites>
-        <dyson_sk>
-            <dyson_singlepagecheckout>
-                <checkout>
-                    <billing_title_enabled>1</billing_title_enabled>
-                    <billing_title>Billing to : Slovakia </billing_title>
-                </checkout>
-            </dyson_singlepagecheckout>
-        </dyson_sk>
-        <dyson_sg>
-            <dyson_singlepagecheckout>
-                <checkout>
-                    <billing_title_enabled>1</billing_title_enabled>
-                    <billing_title>Billing to : Singapore </billing_title>
-                </checkout>
-                <country_label_sort_order>
-                    <sortorder>70</sortorder>
-                </country_label_sort_order>
-            </dyson_singlepagecheckout>
-        </dyson_sg>
-        <dyson_cz>
-            <dyson_singlepagecheckout>
-                <checkout>
-                    <billing_title_enabled>1</billing_title_enabled>
-                    <billing_title>Billing to : Czechia </billing_title>
-                </checkout>
-            </dyson_singlepagecheckout>
-        </dyson_cz>
-        <dyson_tr>
-            <dyson_singlepagecheckout>
-                <checkout>
-                    <billing_title_enabled>1</billing_title_enabled>
-                    <billing_title>Billing to : Turkey </billing_title>
-                </checkout>
-                <prefix_dialcode>
-                    <prefix_dialcode_enabled>1</prefix_dialcode_enabled>
-                </prefix_dialcode>
-            </dyson_singlepagecheckout>
-            <sales>
-                <totals_sort>
-                    <discount_message>30</discount_message>
-                </totals_sort>
-            </sales>
-        </dyson_tr>
-        <dyson_pl>
-            <dyson_singlepagecheckout>
-                <checkout>
-                    <billing_title_enabled>1</billing_title_enabled>
-                    <billing_title>Billing to : Poland </billing_title>
-                </checkout>
-                <country_label_sort_order>
-                    <sortorder>120</sortorder>
-                </country_label_sort_order>
-            </dyson_singlepagecheckout>
-        </dyson_pl>
-        <dyson_in>
-            <dyson_singlepagecheckout>
-                <reload_totals>
-                    <reload_totals_enabled>1</reload_totals_enabled>
-                </reload_totals>
-                <checkout>
-                    <payment_types_available_push_datalayer>1</payment_types_available_push_datalayer>
-                </checkout>
-                <shipping_checkout>
-                    <shipping_title>Delivery</shipping_title>
-                </shipping_checkout>
-                <telephone>
-                    <telephone_message_enabled>1</telephone_message_enabled>
-                    <telephone_message>Providing your mobile phone number will allow you to receive SMS updates regarding your delivery. We will not call you unless there is an issue with your order.</telephone_message>
-                </telephone>
-            </dyson_singlepagecheckout>
-        </dyson_in>
-        <dyson_ro>
-            <dyson_singlepagecheckout>
-                <country_label_sort_order>
-                    <sortorder>120</sortorder>
-                </country_label_sort_order>
-            </dyson_singlepagecheckout>
-        </dyson_ro>
-        <dyson_lv>
-            <dyson_singlepagecheckout>
-                <prefix_postalcode>
-                    <enable_postal_prefix>1</enable_postal_prefix>
-                </prefix_postalcode>
-            </dyson_singlepagecheckout>
-        </dyson_lv>
-        <dyson_lt>
-            <dyson_singlepagecheckout>
-                <prefix_postalcode>
-                    <enable_postal_prefix>1</enable_postal_prefix>
-                </prefix_postalcode>
-            </dyson_singlepagecheckout>
-        </dyson_lt>
-        <dyson_ae>
-            <dyson_singlepagecheckout>
-                <prefix_dialcode>
-                    <prefix_dialcode_enabled>0</prefix_dialcode_enabled>
-                </prefix_dialcode>
-                <street0_required>
-                    <enable_street0_required>1</enable_street0_required>
-                </street0_required>
-            </dyson_singlepagecheckout>
-        </dyson_ae>
-        <dyson_sa>
-            <dyson_singlepagecheckout>
-                <enable_city_dropdown>
-                    <enable_city_dropdown_enable>1</enable_city_dropdown_enable>
-                </enable_city_dropdown>
-                <street0_required>
-                    <enable_street0_required>1</enable_street0_required>
-                </street0_required>
-            </dyson_singlepagecheckout>
-        </dyson_sa>
-    </websites>
-    <stores>
-        <ar-AE>
-            <dyson_singlepagecheckout>
-                <telephone>
-                    <telephone_message_enabled>1</telephone_message_enabled>
-                    <telephone_message>يرجى تقديم رقم هاتفك المكون من 10 أرقام لمعالجة طلبك</telephone_message>
-                </telephone>
-            </dyson_singlepagecheckout>
-        </ar-AE>
-        <en-AE>
-            <dyson_singlepagecheckout>
-                <telephone>
-                    <telephone_message_enabled>1</telephone_message_enabled>
-                    <telephone_message>Please provide your 10-digit phone number to process your order</telephone_message>
-                </telephone>
-            </dyson_singlepagecheckout>
-        </en-AE>
-        <ar-SA>
-            <dyson_singlepagecheckout>
-                <telephone>
-                    <telephone_message_enabled>1</telephone_message_enabled>
-                    <telephone_message>يرجى تقديم رقم هاتفك المكون من 10 أرقام لمعالجة طلبك</telephone_message>
-                </telephone>
-            </dyson_singlepagecheckout>
-        </ar-SA>
-        <en-SA>
-            <dyson_singlepagecheckout>
-                <telephone>
-                    <telephone_message_enabled>1</telephone_message_enabled>
-                    <telephone_message>Please provide your 10-digit phone number to process your request</telephone_message>
-                </telephone>
-            </dyson_singlepagecheckout>
-        </en-SA>
-    </stores>
 </config>

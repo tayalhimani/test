@@ -1,78 +1,53 @@
 <?php
-namespace Dyson\SinglePageCheckout\Helper;
+namespace Dyson\AmastyCheckoutExtension\Helper;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\Helper\AbstractHelper;
-use Magento\Store\Model\ScopeInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Directory\Model\CountryFactory;
 use Magento\Framework\Api\SearchCriteriaBuilder;
-use Dyson\SinglePageCheckout\Api\DysonCityRepositoryInterface;
+use Dyson\AmastyCheckoutExtension\Api\DysonCityRepositoryInterface;
 
-class Data extends AbstractHelper
+class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
-    const COUNTRY_LABEL_ENABLED = 'dyson_singlepagecheckout/country_label/country_label_enabled';
-    const XML_PATH_DEFAULT_COUNTRY = 'general/country/default';
-    const RELOAD_TOTALS_ENABLED = 'dyson_singlepagecheckout/reload_totals_at_checkout/reload_totals_enabled';
-    const XML_PATH_IS_PINCODE_VALIDATOR_ENABLED = 'pincode/general/enable';
-    const XML_PATH_CITY_FIELD = 'dyson_singlepagecheckout/enable_city_dropdown/enable_city_dropdown_enable';
-    const XML_PATH_CITY_FIELD_CAPTION = 'dyson_singlepagecheckout/enable_city_dropdown/city_dropdown_caption';
-    const XML_PATH_COUPON_MESSAGE_STATUS = 'cart/coupon_carts_summary_message/enable';
-    const XML_PATH_COUPON_MESSAGE_BEFORE_APPLIED = 'cart/coupon_carts_summary_message/coupon_carts_summary_before_apply';
+    private $storeManager;
 
-    /**
-     * @var ScopeConfigInterface
-     */
+    private $searchCriteriaBuilder;
+
+    private $dysonCityRepo;
+
     protected $scopeConfig;
 
     /**
-     * @var StoreManagerInterface
+     * Recipient email config path
      */
-    protected $storeManager;
+    const XML_PATH_CITY_FIELD = 'dyson_singlepagecheckout/enable_city_dropdown/enable_city_dropdown_enable';
+
+    const XML_PATH_COUPON_MESSAGE_STATUS = 'cart/coupon_carts_summary_message/enable';
+
+    const XML_PATH_COUPON_MESSAGE_BEFORE_APPLIED = 'cart/coupon_carts_summary_message/coupon_carts_summary_before_apply';
+
+    const XML_PATH_COUPON_MESSAGE_AFTER_APPLIED = 'cart/coupon_carts_summary_message/coupon_carts_summary_after_apply';
 
     /**
-     * @var CountryFactory
-     */
-    protected $countryFactory;
-
-    /**
-     * @var SearchCriteriaBuilder
-     */
-    private $searchCriteriaBuilder;
-
-    /**
-     * @var DysonCityRepositoryInterface
-     */
-    private $dysonCityRepo;
-
-    /**
-     * @param ScopeConfigInterface $scopeConfig
-     * @param StoreManagerInterface $storeManager
-     * @param CountryFactory $countryFactory
+     * __construct function
+     *
+     * @param \Magento\Framework\App\Helper\Context $context
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param DysonCityRepositoryInterface $dysonCityRepo
+     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      */
     public function __construct(
-        ScopeConfigInterface $scopeConfig,
-        StoreManagerInterface $storeManager,
-        CountryFactory $countryFactory,
+        \Magento\Framework\App\Helper\Context $context,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
         SearchCriteriaBuilder $searchCriteriaBuilder,
-        DysonCityRepositoryInterface $dysonCityRepo
-        )
-    {
-        $this->scopeConfig = $scopeConfig;
-        $this->storeManager = $storeManager;
-        $this->countryFactory = $countryFactory;
+        DysonCityRepositoryInterface $dysonCityRepo,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+    ) {
         $this->dysonCityRepo = $dysonCityRepo;
+        $this->storeManager = $storeManager;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+        $this->scopeConfig = $scopeConfig;
+        parent::__construct($context);
     }
 
-    /**
-     * Get Current Store City Dropdown Options
-     *
-     * @return array
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
-     */
     public function getCityOptions()
     {
         $storeId = $this->storeManager->getStore()->getId();
@@ -90,9 +65,8 @@ class Data extends AbstractHelper
 
         return $options;
     }
-
     /**
-     * Get Available City List
+     * getAvailableCityList function
      *
      * @param [type] $fieldName
      * @param [type] $fieldValue
@@ -101,126 +75,65 @@ class Data extends AbstractHelper
      */
     private function getAvailableCityList($searchCriteria)
     {
+
         $cites = $this->dysonCityRepo->getList($searchCriteria);
+
         return $cites->getItems();
     }
-
     /**
-     * Get City Enable Field
+     * getCityEnableField function
+     *
      * @return boolean
      */
     public function getCityEnableField()
     {
-        return $this->getConfigValue(self::XML_PATH_CITY_FIELD, $this->getStoreId());
+        $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
+        return $this->scopeConfig->getValue(self::XML_PATH_CITY_FIELD, $storeScope);
     }
 
     /**
-     * Get City Field Caption
-     * @return string
+     * Return country code
+     * @return mixed
      */
-    public function getCityFieldCaption()
+    public function getCountryCode()
     {
-        return $this->getConfigValue(self::XML_PATH_CITY_FIELD_CAPTION, $this->getStoreId());
+        return $this->scopeConfig->getValue('general/country/default');
     }
 
     /**
-     * Get store config value
-     *
-     * @return string
+     * @return mixed
      */
-    public function getConfigValue($field, $storeId = null)
-    {
-        return $this->scopeConfig->getValue(
-            $field,
-            ScopeInterface::SCOPE_STORE,
-            $storeId
-        );
-    }
-    /**
-     * getCountryname function
-     *
-     * @return string
-     */
-    public function getCountryname(){
-        $countryCode = $this->getConfigValue(self::XML_PATH_DEFAULT_COUNTRY, $this->getStoreId());
-        try {
-            $country = $this->countryFactory->create()->loadByCode($countryCode);
-        } catch (\Exception $e) {
-            $country = '';
-        }
-
-        return $country->getName();
-    }
-
-    /**
-     * @return string
-     */
-    public function getCountryCode(){
-        $countryCode = $this->getConfigValue(self::XML_PATH_DEFAULT_COUNTRY, $this->getStoreId());
-
-        return $countryCode;
-    }
-
-    /**
-     * Get store identifier
-     *
-     * @return  int
-     */
-    private function getStoreId()
-    {
-        return $this->storeManager->getStore()->getId();
-    }
-
-    /**
-     * Check If Country Label enabled
-     *
-     * @return string
-     */
-    public function isCountyLabelEnabled()
-    {
-        return $this->getConfigValue(self::COUNTRY_LABEL_ENABLED, $this->getStoreId());
-    }
-
-    /**
-     * Check Reload Totals is enable
-     *
-     * @return int
-     */
-    public function isReloadTotalsEnable()
-    {
-        return $this->getConfigValue(self::RELOAD_TOTALS_ENABLED, $this->getStoreId());
-    }
-
-    /**
-     * Check Pincode Validator module is enable
-     *
-     * @return int
-     */
-    public function isPincodeModuleEnabled()
-    {
-        return $this->getConfigValue(self::XML_PATH_IS_PINCODE_VALIDATOR_ENABLED, $this->getStoreId());
-    }
-
     private function getCouponMessageAfterApplied(){
         $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
         return $this->scopeConfig->getValue(self::XML_PATH_COUPON_MESSAGE_AFTER_APPLIED,$storeScope);
+
     }
 
+    /**
+     * @return mixed
+     */
     private function getCouponMessageBeforeApplied(){
         $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
         return $this->scopeConfig->getValue(self::XML_PATH_COUPON_MESSAGE_BEFORE_APPLIED,$storeScope);
 
-      }
-
-      public function getCouponMessageOnCartIfEnabled(){
+    }
+    /**
+     * getCouponMessageOnCartIfEnabled function
+     *
+     * @return array
+     */
+    public function getCouponMessageOnCartIfEnabled(){
         $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
         $status = $this->scopeConfig->getValue(self::XML_PATH_COUPON_MESSAGE_STATUS,$storeScope);
         $couponMessage = [];
+
         if ($status) {
             $couponMessage['before_applied'] = $this->getCouponMessageBeforeApplied();
             $couponMessage['after_applied'] = $this->getCouponMessageAfterApplied();
+
             return $couponMessage;
         }
+
         return $couponMessage;
-      }
+    }
 }
