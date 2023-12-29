@@ -1,0 +1,21 @@
+<!-- ko if: window.checkoutConfig.dialCodeEnabled -->
+<label class="input-label-overlay">
+    <span contenteditable="true" data-bind="text: window.checkoutConfig.dialcode.dialcode"></span>
+</label>
+<!-- /ko -->
+
+<input class="input-text" type="tel" data-bind="
+    value: value,
+    valueUpdate: 'keyup',
+    hasFocus: focused,
+    attr: {
+        name: inputName,
+        placeholder: placeholder,
+        'aria-describedby': noticeId,
+        id: uid,
+        disabled: disabled
+    }" />
+
+<!-- ko if: telephoneMessageEnabled -->
+  <small class="control__note" data-bind="text:telephoneMessage, attr: {id: noticeId}"></small>
+<!-- /ko -->

@@ -1,0 +1,47 @@
+<div class="checkout-block__summary__header">
+  <div class="checkout-block__summary__items__title">
+    <span data-bind="i18n: 'Order summary'"></span>
+  </div>
+
+  <div class="checkout-block__summary__items__count">
+      <translate args="maxCartItemsToDisplay" if="maxCartItemsToDisplay < getItemsQty()"/>
+      <translate args="'of'" if="maxCartItemsToDisplay < getItemsQty()"/>
+      <span data-bind="text: getItemsQty()"></span>
+      <translate args="'item'" if="getItemsQty() === 1"/>
+      <translate args="'items'" if="getItemsQty() > 1"/>
+  </div>
+</div>
+
+<div class="checkout-block__summary__items">
+    <div class="checkout-block__summary__items__title">
+      <span data-bind="i18n: 'Order summary'"></span>
+    </div>
+
+    <div class="checkout-block__summary__items__count">
+        <translate args="maxCartItemsToDisplay" if="maxCartItemsToDisplay < getItemsQty()"/>
+        <translate args="'of'" if="maxCartItemsToDisplay < getItemsQty()"/>
+        <span data-bind="text: getItemsQty()"></span>
+
+        <!-- ko if: getItemsQty() == 1 -->
+        <!-- ko i18n: 'Item in Cart' --><!-- /ko -->
+        <!-- /ko -->
+        <!-- ko if: getItemsQty() > 1 -->
+        <!-- ko i18n: 'Items in Cart' --><!-- /ko -->
+        <!-- /ko -->
+
+    </div>
+    <div class="checkout-block__summary__items__list" data-role="content">
+      <each args="items()">
+        <div class="checkout-block__summary__items__list__product">
+            <each args="$parent.elems()" render=""/>
+        </div>
+      </each>
+    </div>
+    <div class="actions-toolbar" if="maxCartItemsToDisplay < getItemsQty()">
+        <div class="secondary">
+            <a class="action viewcart" data-bind="attr: {href: cartUrl}">
+                <span data-bind="i18n: 'View and Edit Cart'"></span>
+            </a>
+        </div>
+    </div>
+</div>

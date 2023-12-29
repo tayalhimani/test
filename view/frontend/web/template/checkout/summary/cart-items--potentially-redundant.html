@@ -1,0 +1,27 @@
+<div class="checkout__summary__items" data-bind="mageInit: {'collapsible':{'openedState': 'active', 'active': isItemsBlockExpanded()}}">
+    module_singlepagecheckout cart-items.html
+    <div class="title" data-role="title">
+        <span data-bind="text: itemsQty()"></span>
+        <!-- ko if: itemsQty() == 1 -->
+        <!-- ko i18n: 'item' --><!-- /ko -->
+        <!-- /ko -->
+        <!-- ko if: itemsQty() > 1 -->
+        <!-- ko i18n: 'items' --><!-- /ko -->
+        <!-- /ko -->
+    </div>
+    <div class="checkout__summary__items__listing" data-role="content">
+        <div class="minicart-items-wrapper overflowed">
+            <ol class="minicart-items">
+                <!-- ko foreach: getItems() -->
+                <li class="product-item">
+                    <div class="product">
+                        <!-- ko foreach: $parent.elems() -->
+                        <!-- ko template: getTemplate() --><!-- /ko -->
+                        <!-- /ko -->
+                    </div>
+                </li>
+                <!-- /ko -->
+            </ol>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,106 @@
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<!-- ko if: quoteIsVirtual == 0 -->
+<span></span>
+
+<!-- ko if: isBothPricesDisplayed() -->
+
+    <tr class="totals shipping excl">
+        <th class="mark" scope="row">
+            <span class="label" data-bind="text: title+ ' ' + excludingTaxMessage"></span>
+            <span class="value" data-bind="text: getShippingMethodTitle()"></span>
+        </th>
+        <td class="amount">
+            <!-- ko if: isCalculated() -->
+            <span class="price"
+                  data-bind="text: getExcludingValue(), attr: {'data-th': excludingTaxMessage}"></span>
+            <!-- /ko -->
+            <!-- ko ifnot: isCalculated() -->
+            <span class="not-calculated "
+                  data-bind="text: getExcludingValue(), attr: {'data-th': excludingTaxMessage}"></span>
+            <!-- /ko -->
+        </td>
+    </tr>
+    <tr class="totals shipping incl">
+        <th class="mark" scope="row">
+            <span class="label" data-bind="text: title + ' ' + includingTaxMessage"></span>
+            <span class="value" data-bind="text: getShippingMethodTitle()"></span>
+        </th>
+        <td class="amount">
+            <!-- ko if: isCalculated() -->
+            <span class="price"
+                  data-bind="text: getIncludingValue(), attr: {'data-th': title + ' ' + excludingTaxMessage}"></span>
+            <!-- /ko -->
+            <!-- ko ifnot: isCalculated() -->
+            <span class="not-calculated"
+                  ></span>
+            <!-- /ko -->
+        </td>
+    </tr>
+    <!-- /ko -->
+    <!-- ko if: isIncludingDisplayed() -->
+    <tr class="totals shipping incl">
+        <th class="mark" scope="row"> </th>
+        <td class="amount">
+            <!-- ko if: isCalculated() -->
+            <div class="shipping-details">
+                <div>
+                    <!-- ko if: getShippingMethodTitle() != "undefined" -->
+                        <span class="label" data-bind="i18n: title"></span>
+                    <!-- /ko -->
+
+                    <!-- ko if: getShippingMethodTitle() == "undefined" -->
+                        <span class="value" data-bind="text: getShippingMethodTitle()"></span>
+                    <!-- /ko -->
+                </div>
+                <span class="price--shipping"
+                      data-bind="text: getIncludingValue(), attr: {'data-th': title}">
+                </span>
+            </div>
+
+            <!-- /ko -->
+            <!-- ko ifnot: isCalculated() -->
+            <span class="not-calculated"
+                  data-bind="text: getIncludingValue(), attr: {'data-th': title}"></span>
+            <!-- /ko -->
+        </td>
+    </tr>
+    <!-- /ko -->
+
+    <!-- ko ifnot: isBothPricesDisplayed() -->
+        <!-- ko if: isExcludingDisplayed() -->
+        <tr class="totals shipping excl">
+            <th class="mark" scope="row">
+            </th>
+            <td class="amount">
+                <!-- ko if: isCalculated() -->
+                <div class="shipping-details">
+                    <div>
+                        <!-- ko if: getShippingMethodTitle() != "undefined" -->
+                            <span class="label" data-bind="i18n: title"></span>
+                        <!-- /ko -->
+
+                        <!-- ko if: getShippingMethodTitle() == "undefined" -->
+                            <span class="value" data-bind="text: getShippingMethodTitle()"></span>
+                        <!-- /ko -->
+                    </div>
+                    <span class="price--shipping"
+                          data-bind="text: getIncludingValue(), attr: {'data-th': title}">
+                    </span>
+                </div>
+
+                <!-- /ko -->
+                <!-- ko ifnot: isCalculated() -->
+                <span class="not-calculated"
+                      data-bind="text: getValue(), attr: {'data-th': title}" style="display:none">
+                </span>
+                <!-- /ko -->
+            </td>
+        </tr>
+        <!-- /ko -->
+    <!-- /ko -->
+<!-- /ko -->

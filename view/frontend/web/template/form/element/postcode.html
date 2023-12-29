@@ -1,0 +1,19 @@
+<!-- ko if: window.checkoutConfig.prefix_postal_code -->
+<label class="input-label-overlay">
+    <span data-bind="text: window.checkoutConfig.prefix_postal_code, attr: {translate: 'no'}"></span>
+    <span>-</span>
+</label>
+<!-- /ko -->
+<input class="input-text" type="text" data-bind="
+    value: value,
+    valueUpdate: 'keyup',
+    hasFocus: focused,
+    attr: {
+       name: inputName,
+       placeholder: placeholder,
+       'aria-describedby': getDescriptionId(),
+       'aria-required': required,
+       'aria-invalid': error() ? true : 'false',
+       id: uid,
+       disabled: (element.dataScope === 'shippingAddress.city' && inputName === 'city') || (element.dataScope === 'shippingAddress.region' && inputName === 'region') || (element.dataScope === 'shippingAddress.country' && inputName === 'country') ? true : disabled
+    }"/>

@@ -1,0 +1,22 @@
+<!-- ko if: window.checkoutConfig.defaultCountryId == "SG" -->
+<label class="input-label-overlay">
+    <span contenteditable="true" data-bind="text: window.checkoutConfig.dialcode.dialcode"></span>
+</label>
+<!-- /ko -->
+<!-- ko ifnot: window.checkoutConfig.defaultCountryId == "SG" -->
+<label class="input-label-overlay">
+    <span contenteditable="false" data-bind="text: window.checkoutConfig.dialcode.dialcode"></span>
+</label>
+<!-- /ko -->
+
+<input class="input-text" type="tel" data-bind="
+    value: value,
+    valueUpdate: 'keyup',
+    hasFocus: focused,
+    attr: {
+        name: inputName,
+        placeholder: placeholder,
+        'aria-describedby': noticeId,
+        id: uid,
+        disabled: disabled
+    }" />

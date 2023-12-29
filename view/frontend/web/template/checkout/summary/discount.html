@@ -1,0 +1,15 @@
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<!-- ko if: isDisplayed() -->
+<div class="totals discount">
+    <div class="title" data-bind="text: title"></div>
+    <div class="discount__text">
+        <div class="discount coupon" data-bind="text: getCouponCode()"></div>
+        <div class="price" data-bind="text: getValue(), attr: {'data-th': name}"></div>
+    </div>
+</div>
+<!-- /ko -->

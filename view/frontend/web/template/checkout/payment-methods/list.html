@@ -1,0 +1,267 @@
+<!--
+/**
+ * Bit of background for this file, it is based on:
+ * module-checkout/view/frontend/web/template/payment-methods/list.html
+ *
+ * Problem is with the original is that it uses custom Magento XHTML nodes that
+ * get rendered out as knockout bindings. This one is converted to actual
+ * knockout bindings for the sake of sanity. See G&V Knockout Docs for
+ * how convert Magento's custom XHTML to knockout if the source changes in
+ * future Magento versions.
+ */
+ -->
+<!-- ko if: isAccordionPaymentEnabled() -->
+<!-- ko if: isPaymentMethodsAvailable() -->
+<div class="items payment-methods accordion-payment-methods" id="payment-method-elements">
+    <!-- ko repeat: {foreach: paymentGroupsList, item: '$group'} -->
+    <div class="checkout-block__methods-container">
+
+        <!-- ko if: getRegion($group().displayArea)().length -->
+        <div class="step-title" data-role="title" data-bind="i18n: getGroupTitle($group)"></div>
+        <!-- /ko -->
+        <div class="payment-group-wrapper">
+            <div class="checkout-block__payment-tabs">
+                <div class="checkout-block__payment-tabs__header">
+
+                    <div class="payment-tabs__header" id="payment-element">
+                        <!-- ko foreach: {data: getRegion($group().displayArea), as: 'method'} -->
+
+                        <!-- ko if: $parent.getPaymentGroupTitle(method.getCode()) != '' -->
+                        <div data-bind="text: $parent.getPaymentGroupTitle(method.getCode()),
+                      attr: {'class' : $parent.getPaymentGroupTitle(method.getCode()) == 'NA' ? 'payment-group-empty-title' : 'payment-group-title'}"></div>
+                        <!--/ko-->
+
+                        <!-- ko if: method.getCode() == 'adyen_hpp' -->
+                        <!-- ko foreach: method.adyenPaymentMethods -->
+                        <!-- ko if: $parent.getAdyenActivePayment(paymentMethod.type) -->
+                        <div data-role="collapsible" class="accordion-heading"
+                             data-bind="attr: {'id': paymentMethod.type, 'data-gtm-name' : 'payment option~' + $parent.getAdyenPaymentTitle(paymentMethod.type).toLowerCase() },
+                           value: paymentMethod.type, click: function(){
+                             $parent.selectHppMethod(paymentMethod.type)
+                          },css: {'active': (paymentMethod.type == $parent.getSelectedAlternativePaymentMethodType()) }"
+                             keyboard="{
+                                13: function (e) { $parent.selectHppMethod(paymentMethod.type); },
+                                32: function (e) { $parent.selectHppMethod(paymentMethod.type); }
+                          }">
+                            <!-- ko if: paymentMethod.type == 'applepay' -->
+                            <div data-role="trigger">
+                                <div class="payment-method-title choice" data-bind="css: {'payment-method-title--active': (paymentMethod.type == $parent.getSelectedAlternativePaymentMethodType()) }">
+                                    <img class="payment-method-logo" alt="" data-bind="attr:{src: $parent.getPaymentImage(paymentMethod.type)}"/>
+                                    <label data-bind="attr: {'for': paymentMethod.type}" id="hideapple" class="label">
+                                        <span class="payment-method-name" data-bind="text: $parent.getAdyenPaymentTitle(paymentMethod.type)"></span>
+                                        <span class="payment-method-description" data-bind="text: $parent.getPaymentMessage(paymentMethod.type)"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <!--/ko-->
+                            <!-- ko ifnot: paymentMethod.type == 'applepay' -->
+                            <div data-role="trigger">
+                                <div class="payment-method-title choice" data-bind="css: {'payment-method-title--active': (paymentMethod.type == $parent.getSelectedAlternativePaymentMethodType()) }">
+                                    <img class="payment-method-logo" alt="" data-bind="attr:{src: $parent.getPaymentImage(paymentMethod.type)}"/>
+                                    <label data-bind="attr: {'for': paymentMethod.type}" class="label">
+                                        <span class="payment-method-name" data-bind="text: $parent.getAdyenPaymentTitle(paymentMethod.type)"></span>
+                                        <span class="payment-method-description" data-bind="text: $parent.getPaymentMessage(paymentMethod.type)"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <!--/ko-->
+
+                        </div>
+                        <div data-role="content" class="accordion-content">
+                            <div class="payment-tabs__tab" data-bind="visible: $parent.isHppActive(),
+                            attr: { 'class': 'tabs__tab--' + getCode() }">
+                                <!-- ko template: $parent.getTemplate() -->
+                                <!-- /ko -->
+                            </div>
+                        </div>
+                        <!--/ko-->
+                        <!--/ko-->
+                        <!--/ko-->
+
+                        <!-- ko if: method.getCode() == 'free' -->
+                        <div class="zero-checkout-message" aria-label="Free of charge notification">
+                            <div class="indicator"><span></span></div>
+                            <div class="payment-method-title-zero-checkout field choice"
+                                 data-bind="click: function() {
+                            if (method.isChecked() !== method.getCode())
+                                method.selectPaymentMethod()
+                            },
+                            css: {
+                                'payment-method-title--active':
+                                method.isChecked() === method.getCode()
+                            }">
+                                <label class="label"
+                                       data-bind="text: method.getTitle(),
+                             attr: { 'for': method.getCode(), 'aria-label': method.getTitle() }">
+                                    <!-- ko if: showLogo() -->
+                                    <div data-bind="attr: {
+                                    'class': 'adyen-sprite ' + method.getCode()
+                                 }"></div>
+                                    <!--/ko-->
+                                </label>
+                            </div>
+                        </div>
+                        <div data-role="content" class="accordion-content zero-checkout">
+                            <div class="payment-tabs__tab"
+                                 data-bind="visible: method.isChecked() === method.getCode(),
+                      attr: { 'class': 'tabs__tab--' + getCode() }">
+                                <!-- ko template: getTemplate() --><!-- /ko -->
+                            </div>
+                        </div>
+                        <!--/ko-->
+
+                        <!-- ko ifnot: method.getCode() == 'adyen_hpp' || method.getCode() == 'free' -->
+                        <div data-role="collapsible" class="accordion-heading"
+                             data-bind="attr: { 'data-gtm-name' : 'payment option~' + method.getTitle().toLowerCase() },
+                      click: function() { if (method.isChecked() !== method.getCode()) method.selectPaymentMethod() }"
+                             keyboard="{
+                          13: function (e) { if (method.isChecked() !== method.getCode()){ method.selectPaymentMethod();}},
+                          32: function (e) { if (method.isChecked() !== method.getCode()){ method.selectPaymentMethod();}}
+                      }">
+                            <div data-role="trigger">
+                                <div class="payment-method-title choice" data-bind=" css: { 'payment-method-title--active': method.isChecked() === method.getCode() }">
+                                    <img class="payment-method-logo" data-bind="attr:{src: $parent.getPaymentImage(method.getCode())}" alt=""/>
+                                    <label class="label">
+                                        <span class="payment-method-name" data-bind="text: method.getTitle(),attr: { 'for': method.getCode() }"></span>
+                                        <span class="payment-method-description" data-bind="text: $parent.getPaymentMessage(method.getCode())"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/ko-->
+
+                        <!-- ko ifnot: method.getCode() == 'adyen_hpp' || method.getCode() == 'free' -->
+                        <div data-role="content" class="accordion-content">
+                            <div class="payment-tabs__tab"
+                                 data-bind="visible: method.isChecked() === method.getCode(),
+                              attr: { 'class': 'tabs__tab--' + getCode() }">
+                                <!-- ko template: getTemplate() -->
+                                <!-- /ko -->
+                            </div>
+                        </div>
+                        <!--/ko-->
+
+                        <!-- /ko -->
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /ko -->
+</div>
+<!-- /ko -->
+
+<!-- ko ifnot: isPaymentMethodsAvailable() -->
+<div class="no-payments-block" data-bind="i18n: 'No Payment Methods'"></div>
+<!-- /ko -->
+<!-- /ko -->
+
+<!-- ---------------------------------------------------------------------------------------------- -->
+
+<!-- ko ifnot: isAccordionPaymentEnabled() -->
+<!-- ko if: isPaymentMethodsAvailable() -->
+<div class="items payment-methods">
+    <!-- ko repeat: {foreach: paymentGroupsList, item: '$group'} -->
+        <div class="checkout-block__methods-container">
+
+            <!-- ko if: getRegion($group().displayArea)().length -->
+                <div class="step-title" data-role="title" data-bind="i18n: getGroupTitle($group)"></div>
+            <!-- /ko -->
+            <div class="checkout-block__payment-tabs">
+                <div class="checkout-block__payment-tabs__header">
+
+                <div class="payment-tabs__header">
+                    <!-- ko foreach: {data: getRegion($group().displayArea), as: 'method'} -->
+
+                    <!-- ko if: method.getCode() == 'adyen_hpp' -->
+                    <!-- ko foreach: method.adyenPaymentMethods -->
+                    <!-- ko ifnot: paymentMethod.type == 'onlineBanking_PL'-->
+                    <div class="payment-method-title field choice" data-bind="attr: {'id': paymentMethod.type }, value: paymentMethod.type, click: function(){ $parent.selectHppMethod(paymentMethod.type)}, css: { 'payment-method-title--active': (paymentMethod.type == $parent.getSelectedAlternativePaymentMethodType()) }">
+                        <label data-bind="attr: {'for': paymentMethod.type}"
+                               class="label">
+                            <span data-bind="text: paymentMethod.name"></span>
+                        </label>
+                    </div>
+                    <!--/ko-->
+                    <!-- ko if: paymentMethod.type == 'onlineBanking_PL'-->
+                    <div class="payment-method-title field choice"
+                         data-bind="attr: {'id': paymentMethod.type }, value: paymentMethod.type, click: function(){ $parent.selectHppMethod(paymentMethod.type) }, css: { 'payment-method-title--active': (paymentMethod.type == $parent.getSelectedAlternativePaymentMethodType()) }">
+                        <label data-bind="attr: {'for': paymentMethod.type}" class="label">
+                            <span data-bind="text: 'Online banking PL'"></span>
+                        </label>
+                    </div>
+                    <!--/ko-->
+                    <!--/ko-->
+                    <!--/ko-->
+
+                    <!-- ko if: method.getCode() == 'free' -->
+                    <div class="zero-checkout-message" aria-label="Free of charge notification">
+                        <div class="indicator"><span></span></div>
+                        <div class="payment-method-title-zero-checkout field choice"
+                             data-bind="click: function() {
+                          if (method.isChecked() !== method.getCode())
+                              method.selectPaymentMethod()
+                          },
+                          css: {
+                              'payment-method-title--active':
+                              method.isChecked() === method.getCode()
+                          }">
+                            <label class="label"
+                                   data-bind="text: method.getTitle(),
+                           attr: { 'for': method.getCode(), 'aria-label': method.getTitle() }">
+                                <!-- ko if: showLogo() -->
+                                    <div data-bind="attr: { 'class': 'adyen-sprite ' + method.getCode() }"></div>
+                                <!--/ko-->
+                            </label>
+                        </div>
+                    </div>
+                    <!--/ko-->
+
+                    <!-- ko ifnot: method.getCode() == 'adyen_hpp' || method.getCode() == 'free' -->
+                    <div class="payment-method-title field choice" data-bind="click: function() { if (method.isChecked() !== method.getCode()) method.selectPaymentMethod() }, css: { 'payment-method-title--active': method.isChecked() === method.getCode() }">
+                        <!--If PayPal is enabled then this block will be visible -->
+                        <!-- ko if: window.paypalreview -->
+                        <label class="label paypalExpress-button-logo" data-bind="text: method.getTitle(), attr: { 'for': method.getCode() }" title="PayPal">
+                            <!-- ko if: showLogo() -->
+                            <div data-bind="attr: { 'class': 'adyen-sprite ' + method.getCode() }"></div>
+                            <!--/ko-->
+                        </label>
+                        <p class="paypalExpress-copy-text">Click the 'Pay with PayPal' button below to complete your purchase.</p>
+                        <!--/ko-->
+
+                        <!--If PayPal is not enabled then this block will be visible -->
+                        <!-- ko if: !window.paypalreview -->
+                        <label class="label" data-bind="text: method.getTitle(), attr: { 'for': method.getCode() }">
+                            <!-- ko if: showLogo() -->
+                            <div data-bind="attr: { 'class': 'adyen-sprite ' + method.getCode() }"></div>
+                            <!--/ko-->
+                        </label>
+                        <!--/ko-->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ko foreach: {data: getRegion($group().displayArea), as: 'method'} -->
+        <!-- ko if: method.getCode() == 'adyen_hpp' -->
+        <div class="payment-tabs__tab" data-bind="visible: isHppActive(), attr: { 'class': 'tabs__tab--' + getCode() }">
+            <!-- ko template: getTemplate() --><!-- /ko -->
+        </div>
+        <!--/ko-->
+        <!-- ko ifnot: method.getCode() == 'adyen_hpp' -->
+        <div class="payment-tabs__tab" data-bind="visible: method.isChecked() === method.getCode(), attr: { 'class': 'tabs__tab--' + getCode() }">
+            <!-- ko template: getTemplate() --><!-- /ko -->
+        </div>
+        <!--/ko-->
+        <!-- /ko -->
+    </div>
+    <!-- /ko -->
+</div>
+<!-- /ko -->
+
+<!-- ko ifnot: isPaymentMethodsAvailable() -->
+<div class="no-payments-block" data-bind="i18n: 'No Payment Methods'"></div>
+<!-- /ko -->
+<!-- /ko -->

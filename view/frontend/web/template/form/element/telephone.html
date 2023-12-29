@@ -1,0 +1,15 @@
+<input class="input-text" type="tel" data-bind="
+    value: value,
+    valueUpdate: 'blur',
+    hasFocus: focused,
+    attr: {
+        name: inputName,
+        placeholder: placeholder,
+        'aria-describedby': noticeId,
+        id: uid,
+        disabled: disabled
+    }" />
+
+<!-- ko if: telephoneMessageEnabled -->
+  <small class="control__note" data-bind="text:telephoneMessage"></small>
+<!-- /ko -->
